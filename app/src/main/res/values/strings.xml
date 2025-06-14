@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">YandexFinance</string>
+
+
+    <string name="expenses">Расходы</string>
+    <string name="expense_categories">Статьи</string>
+    <string name="incomes">Доходы</string>
+    <string name="settings">Настройки</string>
+    <string name="account">Счет</string>
+
+
+    <string name="expenses_title">Расходы сегодня</string>
+    <string name="expense_categories_title">Мои статьи</string>
+    <string name="incomes_title">Доходы сегодня</string>
+    <string name="settings_title">Настройки</string>
+    <string name="account_title">Мой счет</string>
+
+
+
+    <string name="light_theme_auto">Тёмная тема</string>
+    <string name="main_color">Основной цвет</string>
+    <string name="sounds">Звуки</string>
+    <string name="haptics">Хаптики</string>
+    <string name="code_password">Код пароль</string>
+    <string name="synchronization">Синхронизация</string>
+    <string name="language">Язык</string>
+    <string name="about">О программе</string>
+
+
+
+</resources>
