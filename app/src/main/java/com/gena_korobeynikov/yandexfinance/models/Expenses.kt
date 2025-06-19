@@ -7,4 +7,6 @@ data class Expenses (
     val title: String,
     val subtitle: String? = null,
     val emoji: String? = null,
+    val his_subtext : String? = null,
+    val his_time : String? = null,
 )
