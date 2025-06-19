@@ -36,6 +36,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -45,6 +46,8 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.gena_korobeynikov.yandexfinance.ui.navigation.Screen
 import com.gena_korobeynikov.yandexfinance.ui.navigation.NavigationGraph
 import com.gena_korobeynikov.yandexfinance.ui.theme.YandexFinanceTheme
@@ -61,8 +64,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             YandexFinanceTheme {
                 val navController = rememberNavController()
-                val currentRoute = remember { mutableStateOf(Screen.Expenses.route) }
-                val fabAction = Screen.fromRoute(currentRoute.value)?.addBtnAction
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry?.destination?.route
+                val fabAction = Screen.fromRoute(currentRoute)?.addBtnAction
 
 
                 Scaffold(
@@ -88,7 +92,7 @@ class MainActivity : ComponentActivity() {
 
 
                     topBar = {
-                        val currentScreen = Screen.all.find { it.route == currentRoute.value }
+                        val currentScreen = Screen.all.find { it.route == currentRoute }
 
                         CenterAlignedTopAppBar(
                             windowInsets = TopAppBarDefaults.windowInsets,
@@ -108,21 +112,21 @@ class MainActivity : ComponentActivity() {
                             },
                             actions = {
                                 when (currentScreen?.route) {
-                                    "expenses" -> IconButton(onClick = { /* История расходов */ }) {
+                                    Screen.Expenses.route -> IconButton(onClick = { /* История расходов */ }) {
                                         Icon(
                                             painter = painterResource(id = R.drawable.ic_history),
                                             contentDescription = "История расходов"
                                         )
                                     }
 
-                                    "incomes" -> IconButton(onClick = { /* История доходов */ }) {
+                                    Screen.Incomes.route  -> IconButton(onClick = { /* История доходов */ }) {
                                         Icon(
                                             painter = painterResource(id = R.drawable.ic_history),
                                             contentDescription = "История доходов"
                                         )
                                     }
 
-                                    "account" -> IconButton(onClick = { /* Реадктировать счёт */ }) {
+                                    Screen.Account.route  -> IconButton(onClick = { /* Реадктировать счёт */ }) {
                                         Icon(
                                             painter = painterResource(id = R.drawable.ic_edit),
                                             contentDescription = "Реадктировать счёт "
@@ -146,12 +150,11 @@ class MainActivity : ComponentActivity() {
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Screen.all.forEach { item ->
-                                    val isSelected = currentRoute.value == item.route
+                                    val isSelected = currentRoute == item.route
                                     NavigationBarItem(
                                         selected = isSelected,
                                         onClick = {
-                                            navController.navigate(item.route)
-                                            currentRoute.value = item.route
+                                            navController.safeNavigate(item)
                                         },
                                         colors = NavigationBarItemDefaults.colors(
                                             selectedIconColor = colorResource(id = R.color.primary_green),
@@ -183,6 +186,19 @@ class MainActivity : ComponentActivity() {
                         NavigationGraph(navController = navController)
                     }
                 }
+            }
+        }
+    }
+
+
+    fun NavHostController.safeNavigate(screen: Screen) {
+        if (currentDestination?.route != screen.route) {
+            navigate(screen.route) {
+                popUpTo(graph.startDestinationId) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
             }
         }
     }
