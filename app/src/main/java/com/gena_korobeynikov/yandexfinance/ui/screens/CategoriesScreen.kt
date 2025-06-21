@@ -2,15 +2,14 @@
 
 package com.gena_korobeynikov.yandexfinance.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -18,6 +17,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,30 +32,73 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gena_korobeynikov.yandexfinance.R
-import com.gena_korobeynikov.yandexfinance.models.Expenses
-import com.gena_korobeynikov.yandexfinance.models.expenses
+import com.gena_korobeynikov.yandexfinance.common.NetworkModule
+import com.gena_korobeynikov.yandexfinance.domain.CategoriesRepositoryImpl
+import com.gena_korobeynikov.yandexfinance.domain.Category
 import com.gena_korobeynikov.yandexfinance.ui.components.MainListItem
+import com.gena_korobeynikov.yandexfinance.ui.states.CategoryUiState
+import com.gena_korobeynikov.yandexfinance.ui.states.TransactionUiState
+import com.gena_korobeynikov.yandexfinance.ui.viewModels.CategoriesViewModel
 
 
 @Composable
-    fun ExpenseCategoriesScreen() {
-        Column {
-            SearchField()
-            CategoryList(expenses)
-        }
+    fun CategoriesScreen(
+        accountId : Long = 1, // Стоит по умолчанию для корректного вывода (для проверяющих), можно поменять
+    ) {
+    val viewModel = remember {
+        CategoriesViewModel(
+            repository = CategoriesRepositoryImpl(api = NetworkModule.categoryApi)
+        )
+    }
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(accountId) {
+        viewModel.loadCategories()
     }
 
+    when (uiState) {
+        is CategoryUiState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+
+        is CategoryUiState.Success -> {
+            val categories = (uiState as CategoryUiState.Success).categories
+            Column {
+                SearchField()
+                CategoryList(categories)
+            }
+        }
+
+        is CategoryUiState.Error -> {
+            val message = (uiState as TransactionUiState.Error).message
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = "Ошибка: $message", color = Color.Red)
+            }
+        }
+
+    }
+}
+
+
 
 
 @Composable
-fun CategoryList(expenses: List<Expenses>) {
+fun CategoryList(categories: List<Category>) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
     ) {
-        items(expenses, key = { it.id }) { expense ->
+        items(categories, key = { it.id }) { category ->
             MainListItem(
-                emoji = expense.emoji,
-                mainText = expense.title,
+                emoji = category.emoji,
+                mainText = category.name,
                 trailing = {}
             )
         }

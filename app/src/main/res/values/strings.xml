@@ -14,6 +14,7 @@
     <string name="incomes_title">Доходы сегодня</string>
     <string name="settings_title">Настройки</string>
     <string name="account_title">Мой счет</string>
+    <string name="history_title">Моя история</string>
 
 
 
@@ -26,6 +27,10 @@
     <string name="language">Язык</string>
     <string name="about">О программе</string>
 
+
+    <string name="start">Начало</string>
+    <string name="end">Конец</string>
+    <string name="sum">Сумма</string>
 
 
 </resources>

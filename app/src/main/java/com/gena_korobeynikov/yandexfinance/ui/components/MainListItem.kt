@@ -33,6 +33,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -127,14 +128,18 @@ fun MainListItem(
                     modifier = if (huggingHeight) Modifier.height(40.dp).wrapContentHeight(align = Alignment.CenterVertically) else Modifier,
                     text = mainText,
                     style = MaterialTheme.typography.bodyLarge,
-                    color = colorResource(id = R.color.on_surface)
+                    color = colorResource(id = R.color.on_surface),
+                    overflow = TextOverflow.Ellipsis
                 )
 
                 if (subtitle != null) {
                     Text(
                         text = subtitle,
                         style = MaterialTheme.typography.bodyMedium,
-                        color= colorResource(id= R.color.on_surface_variant))
+                        color= colorResource(id= R.color.on_surface_variant),
+                        overflow = TextOverflow.Ellipsis
+                    )
+
                 }
             }
 

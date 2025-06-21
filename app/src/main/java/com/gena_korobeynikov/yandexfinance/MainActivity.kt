@@ -7,18 +7,12 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -33,21 +27,19 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.gena_korobeynikov.yandexfinance.ui.navigation.Screen
 import com.gena_korobeynikov.yandexfinance.ui.navigation.NavigationGraph
 import com.gena_korobeynikov.yandexfinance.ui.theme.YandexFinanceTheme
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
@@ -61,8 +53,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             YandexFinanceTheme {
                 val navController = rememberNavController()
-                val currentRoute = remember { mutableStateOf(Screen.Expenses.route) }
-                val fabAction = Screen.fromRoute(currentRoute.value)?.addBtnAction
+                val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+                val currentRoot = Screen.rootOf(currentRoute)
+                val fabAction = Screen.fromRoute(currentRoute)?.addBtnAction
 
 
                 Scaffold(
@@ -88,7 +81,7 @@ class MainActivity : ComponentActivity() {
 
 
                     topBar = {
-                        val currentScreen = Screen.all.find { it.route == currentRoute.value }
+                        val currentScreen = Screen.all.find { it.route == currentRoute } ?: Screen.Expenses
 
                         CenterAlignedTopAppBar(
                             windowInsets = TopAppBarDefaults.windowInsets,
@@ -100,36 +93,20 @@ class MainActivity : ComponentActivity() {
                             title = {
                                     Text(
                                         text = stringResource(
-                                            id = currentScreen?.titleRes ?: R.string.app_name
+                                            id = currentScreen.titleRes
                                         ),
                                         style = MaterialTheme.typography.titleLarge,
                                         color = colorResource(id = R.color.on_surface)
                                     )
                             },
                             actions = {
-                                when (currentScreen?.route) {
-                                    "expenses" -> IconButton(onClick = { /* История расходов */ }) {
+                                if (currentScreen.topBarBtnIconRes != null) {
+                                    IconButton(onClick = { currentScreen.topBarBtnAction?.invoke(navController) }) {
                                         Icon(
-                                            painter = painterResource(id = R.drawable.ic_history),
-                                            contentDescription = "История расходов"
+                                            painter = painterResource(id = currentScreen.topBarBtnIconRes),
+                                            contentDescription = getString( currentScreen.titleRes)
                                         )
                                     }
-
-                                    "incomes" -> IconButton(onClick = { /* История доходов */ }) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.ic_history),
-                                            contentDescription = "История доходов"
-                                        )
-                                    }
-
-                                    "account" -> IconButton(onClick = { /* Реадктировать счёт */ }) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.ic_edit),
-                                            contentDescription = "Реадктировать счёт "
-                                        )
-                                    }
-
-                                    else -> {}
                                 }
                             }
                         )
@@ -145,13 +122,12 @@ class MainActivity : ComponentActivity() {
                                     .padding(horizontal = 8.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Screen.all.forEach { item ->
-                                    val isSelected = currentRoute.value == item.route
+                                Screen.allNavBar.forEach { item ->
+                                    val isSelected = currentRoot == item.root
                                     NavigationBarItem(
                                         selected = isSelected,
                                         onClick = {
-                                            navController.navigate(item.route)
-                                            currentRoute.value = item.route
+                                            navController.safeNavigate(item.root)
                                         },
                                         colors = NavigationBarItemDefaults.colors(
                                             selectedIconColor = colorResource(id = R.color.primary_green),
@@ -162,13 +138,13 @@ class MainActivity : ComponentActivity() {
                                         ),
                                         icon = {
                                             Icon(
-                                                painter = painterResource(id = item.iconRes),
+                                                painter = painterResource(id = item.navBarIconRes!!),
                                                 contentDescription = null,
                                             )
                                         },
                                         label = {
                                             Text(
-                                                text = stringResource(id = item.navBarItemTitleRes),
+                                                text = stringResource(id = item.navBarItemTitleRes!!),
                                                 style = MaterialTheme.typography.labelMedium,
                                             )
                                         }
@@ -183,6 +159,33 @@ class MainActivity : ComponentActivity() {
                         NavigationGraph(navController = navController)
                     }
                 }
+            }
+        }
+    }
+
+
+    fun NavHostController.safeNavigate(root: Screen) {
+        val currentRoot = Screen.rootOf(currentBackStackEntry?.destination?.route)
+
+        // Если уже на этом root-графе — очищаем вложенную навигацию до начального экрана
+        if (currentRoot == root) {
+            val startChild = Screen.all.find { it.root == root && it != root }
+            startChild?.let {
+                navigate(it.route) {
+                    popUpTo(root.route) {
+                        inclusive = false
+                    }
+                    launchSingleTop = true
+                }
+            }
+        } else {
+            // Переход к root-графу
+            navigate(root.route) {
+                popUpTo(Screen.ExpensesRoot.route) {  // здесь можно использовать root.route
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
             }
         }
     }
