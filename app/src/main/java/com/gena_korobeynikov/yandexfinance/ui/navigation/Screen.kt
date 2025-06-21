@@ -44,7 +44,7 @@ sealed class Screen(
         route = "history",
         root = ExpensesRoot,
         titleRes = R.string.history_title,
-        topBarBtnIconRes = R.drawable.ic_plus,
+        topBarBtnIconRes = R.drawable.ic_analyze,
         topBarBtnAction = { /* TODO */ }
     )
 
@@ -56,7 +56,7 @@ sealed class Screen(
         navBarIconRes = R.drawable.ic_navbar_incomes,
         topBarBtnIconRes = R.drawable.ic_history,
         topBarBtnAction = { navController ->
-            Log.i("TopBar", "Incomes button clicked")
+            navController.navigate("history")
         },
         addBtnAction = { /* TODO: add new income */ }
     )

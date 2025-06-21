@@ -1,9 +1,18 @@
+import java.util.Properties
+
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    //alias(libs.plugins.hilt.android)
+    id("kotlin-kapt")
 }
+//hilt {
+//    enableAggregatingTask = false
+//}
 
 android {
+
     namespace = "com.gena_korobeynikov.yandexfinance"
     compileSdk = 35
 
@@ -18,6 +27,19 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        val keystoreFile = project.rootProject.file("local.properties")
+        val properties = Properties()
+        properties.load(keystoreFile.inputStream())
+
+        val apiToken = properties.getProperty("API_TOKEN") ?: ""
+
+        buildConfigField(
+            type = "String",
+            name = "API_TOKEN",
+            value = apiToken
+        )
+
     }
 
     buildTypes {
@@ -49,8 +71,9 @@ android {
     }
 }
 
-dependencies {
 
+
+dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -60,6 +83,29 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
+
+
+    implementation(libs.androidx.retrofit2)
+    implementation(libs.androidx.retrofit2.moshi)
+    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
+
+
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+
+
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+
+    implementation(libs.converter)
+    implementation(libs.gson)
+
+    // Hilt
+//    implementation(libs.hilt.android)
+//    implementation(libs.hilt.navigation.compose)
+//    kapt(libs.hilt.android.compiler)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

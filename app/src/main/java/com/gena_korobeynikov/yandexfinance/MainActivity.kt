@@ -40,6 +40,7 @@ import com.gena_korobeynikov.yandexfinance.ui.navigation.Screen
 import com.gena_korobeynikov.yandexfinance.ui.navigation.NavigationGraph
 import com.gena_korobeynikov.yandexfinance.ui.theme.YandexFinanceTheme
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
     @SuppressLint("SourceLockedOrientationActivity")

@@ -17,5 +17,8 @@ fun NavGraphBuilder.incomesNavGraph(navController: NavHostController) {
         composable(Screen.Incomes.route) {
             IncomesScreen()
         }
+        composable(Screen.History.route) {
+            HistoryScreen(isIncomes = true)
+        }
     }
 }
