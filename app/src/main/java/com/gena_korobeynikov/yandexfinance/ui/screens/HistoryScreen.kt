@@ -61,24 +61,33 @@ fun HistoryScreen(isIncomes : Boolean = false) {
 
 
     if (showStartPicker) {
-        DatePickerDialog(
+        val datePickerDialog = DatePickerDialog(
             context,
             { _, year, month, dayOfMonth ->
                 startDate = LocalDate.of(year, month + 1, dayOfMonth)
                 showStartPicker = false
             },
             startDate.year, startDate.monthValue - 1, startDate.dayOfMonth
-        ).show()
+        )
+        datePickerDialog.setOnDismissListener {
+            showStartPicker = false
+        }
+        datePickerDialog.show()
     }
+
     if (showEndPicker) {
-        DatePickerDialog(
+        val datePickerDialog = DatePickerDialog(
             context,
             { _, year, month, dayOfMonth ->
                 endDate = LocalDate.of(year, month + 1, dayOfMonth)
                 showEndPicker = false
             },
             endDate.year, endDate.monthValue - 1, endDate.dayOfMonth
-        ).show()
+        )
+        datePickerDialog.setOnDismissListener {
+            showEndPicker = false
+        }
+        datePickerDialog.show()
     }
 
 

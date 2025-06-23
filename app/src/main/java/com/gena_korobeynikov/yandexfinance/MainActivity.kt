@@ -38,6 +38,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.gena_korobeynikov.yandexfinance.ui.navigation.Screen
 import com.gena_korobeynikov.yandexfinance.ui.navigation.NavigationGraph
+import com.gena_korobeynikov.yandexfinance.ui.navigation.Screen.Parentless
 import com.gena_korobeynikov.yandexfinance.ui.theme.YandexFinanceTheme
 
 
@@ -98,6 +99,16 @@ class MainActivity : ComponentActivity() {
                                         style = MaterialTheme.typography.titleLarge,
                                         color = colorResource(id = R.color.on_surface)
                                     )
+                            },
+                            navigationIcon = {
+                                if ( currentScreen !in Screen.allNavBar) {
+                                    IconButton(onClick = { navController.popBackStack() }) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.ic_plus),
+                                            contentDescription = "Back"
+                                        )
+                                    }
+                                }
                             },
                             actions = {
                                 if (currentScreen.topBarBtnIconRes != null) {

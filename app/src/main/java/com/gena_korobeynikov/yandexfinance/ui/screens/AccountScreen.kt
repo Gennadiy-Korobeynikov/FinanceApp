@@ -70,7 +70,7 @@ import com.gena_korobeynikov.yandexfinance.ui.viewModels.TransactionsViewModel
         }
 
         is AccountUiState.Error -> {
-            val message = (uiState as TransactionUiState.Error).message
+            val message = (uiState as AccountUiState.Error).message
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center

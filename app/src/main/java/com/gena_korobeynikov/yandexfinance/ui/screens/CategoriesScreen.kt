@@ -75,7 +75,7 @@ import com.gena_korobeynikov.yandexfinance.ui.viewModels.CategoriesViewModel
         }
 
         is CategoryUiState.Error -> {
-            val message = (uiState as TransactionUiState.Error).message
+            val message = (uiState as CategoryUiState.Error).message
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
