@@ -1,13 +1,11 @@
 package com.gena_korobeynikov.yandexfinance.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -18,7 +16,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -26,7 +23,9 @@ import com.gena_korobeynikov.yandexfinance.R
 import com.gena_korobeynikov.yandexfinance.common.NetworkModule
 import com.gena_korobeynikov.yandexfinance.data.toSymbol
 import com.gena_korobeynikov.yandexfinance.domain.Transaction
-import com.gena_korobeynikov.yandexfinance.domain.TransactionsRepositoryImpl
+import com.gena_korobeynikov.yandexfinance.data.repo_Implementations.TransactionsRepositoryImpl
+import com.gena_korobeynikov.yandexfinance.ui.UiState
+import com.gena_korobeynikov.yandexfinance.ui.components.ListLoader
 import com.gena_korobeynikov.yandexfinance.ui.components.MainListItem
 import com.gena_korobeynikov.yandexfinance.ui.states.TransactionUiState
 import com.gena_korobeynikov.yandexfinance.ui.viewModels.TransactionsViewModel
@@ -50,32 +49,13 @@ const val TOTAL_INCOMES = "600 000 ₽" // Пока здесь, потом с б
         viewModel.loadTransactions(accountId)
     }
 
-    when (uiState) {
-        is TransactionUiState.Loading -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        }
-
-        is TransactionUiState.Success -> {
-            val transactions = (uiState as TransactionUiState.Success).transactions
-            IncomesList(transactions)
-        }
-
-        is TransactionUiState.Error -> {
-            val message = (uiState as TransactionUiState.Error).message
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = "Ошибка: $message", color = Color.Red)
-            }
-        }
-
+    ListLoader(
+        uiState
+    ) {
+        val transactions = (uiState as UiState.Success).data
+        IncomesList(transactions)
     }
+
 }
 
 

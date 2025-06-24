@@ -1,8 +1,9 @@
-package com.gena_korobeynikov.yandexfinance.domain
+package com.gena_korobeynikov.yandexfinance.data.repo_Implementations
 
 import com.gena_korobeynikov.yandexfinance.data.api.CategoriesApi
-import com.gena_korobeynikov.yandexfinance.data.api.TransactionsApi
 import com.gena_korobeynikov.yandexfinance.data.toDomain
+import com.gena_korobeynikov.yandexfinance.domain.CategoriesRepository
+import com.gena_korobeynikov.yandexfinance.domain.Category
 
 class CategoriesRepositoryImpl (
     private val api: CategoriesApi

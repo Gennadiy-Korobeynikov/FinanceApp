@@ -1,7 +1,9 @@
-package com.gena_korobeynikov.yandexfinance.domain
+package com.gena_korobeynikov.yandexfinance.data.repo_Implementations
 
 import com.gena_korobeynikov.yandexfinance.data.api.TransactionsApi
 import com.gena_korobeynikov.yandexfinance.data.toDomain
+import com.gena_korobeynikov.yandexfinance.domain.Transaction
+import com.gena_korobeynikov.yandexfinance.domain.TransactionsRepository
 
 class TransactionsRepositoryImpl (
     private val api: TransactionsApi

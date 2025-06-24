@@ -18,3 +18,30 @@ fun NavigationGraph(navController: NavHostController) {
         settingsNavGraph(navController)
     }
 }
+
+
+fun NavHostController.safeNavigate(root: Screen) {
+    val currentRoot = Screen.rootOf(currentBackStackEntry?.destination?.route)
+
+    // Если уже на этом root-графе — очищаем вложенную навигацию до начального экрана
+    if (currentRoot == root) {
+        val startChild = Screen.all.find { it.root == root && it != root }
+        startChild?.let {
+            navigate(it.route) {
+                popUpTo(root.route) {
+                    inclusive = false
+                }
+                launchSingleTop = true
+            }
+        }
+    } else {
+        // Переход к root-графу
+        navigate(root.route) {
+            popUpTo(Screen.ExpensesRoot.route) {  // здесь можно использовать root.route
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+}
