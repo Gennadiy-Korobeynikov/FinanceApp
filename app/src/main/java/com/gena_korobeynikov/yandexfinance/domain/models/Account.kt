@@ -1,4 +1,4 @@
-package com.gena_korobeynikov.yandexfinance.domain
+package com.gena_korobeynikov.yandexfinance.domain.models
 
 import java.math.BigDecimal
 

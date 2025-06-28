@@ -1,6 +1,6 @@
-package com.gena_korobeynikov.yandexfinance.domain
+package com.gena_korobeynikov.yandexfinance.ui.models
 
-data class Category(
+data class CategoryUi(
     val id: Long,
     val name: String,
     val emoji: String,

@@ -1,33 +1,22 @@
 package com.gena_korobeynikov.yandexfinance.ui.viewModels
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.gena_korobeynikov.yandexfinance.domain.CategoriesRepository
-import com.gena_korobeynikov.yandexfinance.domain.TransactionsRepository
-import com.gena_korobeynikov.yandexfinance.ui.states.CategoryUiState
-import com.gena_korobeynikov.yandexfinance.ui.states.TransactionUiState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-
+import com.gena_korobeynikov.yandexfinance.di.TemporaryServiceLocator
+import com.gena_korobeynikov.yandexfinance.domain.repos.CategoriesRepository
+import com.gena_korobeynikov.yandexfinance.domain.models.Category
+import com.gena_korobeynikov.yandexfinance.domain.use_cases.GetCategoriesUseCase
+import com.gena_korobeynikov.yandexfinance.domain.use_cases.GetTransactionsForPeriodUseCase
+import com.gena_korobeynikov.yandexfinance.ui.mapers.toUi
+import com.gena_korobeynikov.yandexfinance.ui.models.CategoryUi
 
 class CategoriesViewModel(
-    private val repository: CategoriesRepository
-) : ViewModel() {
-
-    private val _uiState = MutableStateFlow<CategoryUiState>(CategoryUiState.Loading)
-    val uiState: StateFlow<CategoryUiState> = _uiState.asStateFlow()
+    private val getCategories : GetCategoriesUseCase =
+        GetCategoriesUseCase(TemporaryServiceLocator.categoriesRepository)
+) : BaseLoadViewModel<List<Category>, List<CategoryUi>>() {
 
     fun loadCategories() {
-        viewModelScope.launch {
-            try {
-                _uiState.value = CategoryUiState.Loading
-                val categories = repository.getCategories()
-                _uiState.value = CategoryUiState.Success(categories)
-            } catch (e: Exception) {
-                _uiState.value = CategoryUiState.Error(e.message ?: "Ошибка загрузки")
-            }
-        }
+        load(
+            mapper = { list -> list.map { it.toUi() } },
+            block = { getCategories() }
+        )
     }
 }
