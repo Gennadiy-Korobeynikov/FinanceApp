@@ -1,11 +1,11 @@
-package com.gena_korobeynikov.yandexfinance.data
+package com.gena_korobeynikov.yandexfinance.data.mappers
 
 import com.gena_korobeynikov.yandexfinance.data.dto.AccountDto
 import com.gena_korobeynikov.yandexfinance.data.dto.CategoryDto
 import com.gena_korobeynikov.yandexfinance.data.dto.TransactionDto
-import com.gena_korobeynikov.yandexfinance.domain.Account
-import com.gena_korobeynikov.yandexfinance.domain.Category
-import com.gena_korobeynikov.yandexfinance.domain.Transaction
+import com.gena_korobeynikov.yandexfinance.domain.models.Account
+import com.gena_korobeynikov.yandexfinance.domain.models.Category
+import com.gena_korobeynikov.yandexfinance.domain.models.Transaction
 
 import java.time.Instant
 

@@ -89,7 +89,7 @@ fun MainScreen() {
                         if (currentScreen !in Screen.allNavBar) {
                             IconButton(onClick = { navController.popBackStack() }) {
                                 Icon(
-                                    painter = painterResource(R.drawable.ic_plus),
+                                    painter = painterResource(R.drawable.ic_back),
                                     contentDescription = "Back"
                                 )
                             }

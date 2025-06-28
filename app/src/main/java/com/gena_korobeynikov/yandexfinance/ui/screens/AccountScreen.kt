@@ -21,14 +21,12 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.gena_korobeynikov.yandexfinance.R
-import com.gena_korobeynikov.yandexfinance.common.NetworkModule
-import com.gena_korobeynikov.yandexfinance.data.toSymbol
-import com.gena_korobeynikov.yandexfinance.domain.Account
-import com.gena_korobeynikov.yandexfinance.data.repo_Implementations.AccountRepositoryImpl
-import com.gena_korobeynikov.yandexfinance.ui.UiState
+import com.gena_korobeynikov.yandexfinance.ui.mapers.toSymbol
+import com.gena_korobeynikov.yandexfinance.domain.models.Account
+import com.gena_korobeynikov.yandexfinance.ui.states.UiState
 import com.gena_korobeynikov.yandexfinance.ui.components.ListLoader
 import com.gena_korobeynikov.yandexfinance.ui.components.MainListItem
-import com.gena_korobeynikov.yandexfinance.ui.states.AccountUiState
+import com.gena_korobeynikov.yandexfinance.ui.models.AccountUi
 import com.gena_korobeynikov.yandexfinance.ui.viewModels.AccountViewModel
 
 
@@ -37,9 +35,7 @@ import com.gena_korobeynikov.yandexfinance.ui.viewModels.AccountViewModel
         accountId: Long = 1, // Стоит по умолчанию для корректного вывода (для проверяющих), можно поменять
     ) {
     val viewModel = remember {
-        AccountViewModel(
-            repository = AccountRepositoryImpl(api = NetworkModule.accountApi)
-        )
+        AccountViewModel()
     }
     val uiState by viewModel.uiState.collectAsState()
 
@@ -58,7 +54,7 @@ import com.gena_korobeynikov.yandexfinance.ui.viewModels.AccountViewModel
 
 @Composable
 fun AccountInfo(
-    account: Account
+    account: AccountUi
 ) {
     Column {
         MainListItem(
@@ -71,7 +67,7 @@ fun AccountInfo(
                 Row (verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     Text(
-                        text = "${account.balance} ${account.currency.toSymbol()}",
+                        text = "${account.balance} ${account.currency}",
                         style = MaterialTheme.typography.bodyLarge,
                     )
                     Icon(
@@ -90,7 +86,7 @@ fun AccountInfo(
                 Row (verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     Text(
-                        text = account.currency.toSymbol(),
+                        text = account.currency,
                         style = MaterialTheme.typography.bodyLarge,
                     )
                     Icon(

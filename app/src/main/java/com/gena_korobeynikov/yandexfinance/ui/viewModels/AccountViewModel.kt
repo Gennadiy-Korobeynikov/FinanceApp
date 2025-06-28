@@ -1,17 +1,22 @@
 package com.gena_korobeynikov.yandexfinance.ui.viewModels
 
-import com.gena_korobeynikov.yandexfinance.domain.Account
-import com.gena_korobeynikov.yandexfinance.domain.AccountRepository
+import com.gena_korobeynikov.yandexfinance.di.TemporaryServiceLocator
+import com.gena_korobeynikov.yandexfinance.domain.models.Account
+import com.gena_korobeynikov.yandexfinance.domain.use_cases.GetAccountUseCase
+import com.gena_korobeynikov.yandexfinance.ui.mapers.toUi
+import com.gena_korobeynikov.yandexfinance.ui.models.AccountUi
 
 
 class AccountViewModel(
-    private val repository: AccountRepository
-) : BaseLoadViewModel<Account>() {
+    private val getAccount : GetAccountUseCase =
+        GetAccountUseCase(TemporaryServiceLocator.accountRepository)
+) : BaseLoadViewModel<Account, AccountUi>() {
 
     fun loadAccount(accountId: Long) {
-        load {
-            repository.getAccount(accountId)
-        }
+        load(
+            mapper = { it.toUi() },
+            block = { getAccount(accountId) }
+        )
     }
 }
 

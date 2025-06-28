@@ -1,4 +1,4 @@
-package com.gena_korobeynikov.yandexfinance.ui
+package com.gena_korobeynikov.yandexfinance.ui.states
 
 sealed class UiState<out T> {
     data object Loading : UiState<Nothing>()

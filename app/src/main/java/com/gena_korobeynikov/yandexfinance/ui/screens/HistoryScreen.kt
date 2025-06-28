@@ -16,7 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,154 +25,137 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gena_korobeynikov.yandexfinance.R
-import com.gena_korobeynikov.yandexfinance.common.NetworkModule
-import com.gena_korobeynikov.yandexfinance.data.toSymbol
-import com.gena_korobeynikov.yandexfinance.domain.Transaction
-import com.gena_korobeynikov.yandexfinance.data.repo_Implementations.TransactionsRepositoryImpl
-import com.gena_korobeynikov.yandexfinance.ui.UiState
+import com.gena_korobeynikov.yandexfinance.ui.states.UiState
 import com.gena_korobeynikov.yandexfinance.ui.components.ListLoader
 import com.gena_korobeynikov.yandexfinance.ui.components.MainListItem
-import com.gena_korobeynikov.yandexfinance.ui.states.TransactionUiState
-import com.gena_korobeynikov.yandexfinance.ui.viewModels.TransactionsViewModel
+import com.gena_korobeynikov.yandexfinance.ui.models.TransactionUi
+import com.gena_korobeynikov.yandexfinance.ui.viewModels.HistoryViewModel
 import java.time.LocalDate
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 
 @Composable
-fun HistoryScreen(isIncomes : Boolean = false) {
-    val viewModel = remember {
-        TransactionsViewModel(
-            repository = TransactionsRepositoryImpl(api = NetworkModule.transactionsApi)
-        )
-    }
-    val uiState by viewModel.uiState.collectAsState()
+fun HistoryScreen(
+    isIncomes: Boolean = false,
+    viewModel: HistoryViewModel = viewModel()
+) {
 
-    // По умолчанию: начало месяца и сегодня
-    var startDate by remember { mutableStateOf(LocalDate.now().withDayOfMonth(1)) }
-    var endDate by remember { mutableStateOf(LocalDate.now()) }
+    val uiState by viewModel.uiState.collectAsState()
+    val startDate by viewModel.startDate.collectAsState()
+    val endDate by viewModel.endDate.collectAsState()
+
     val accountId: Long = 1
 
     val context = LocalContext.current
-    var showStartPicker by remember { mutableStateOf(false) }
-    var showEndPicker by remember { mutableStateOf(false) }
+    var showStartPicker by rememberSaveable { mutableStateOf(false) }
+    var showEndPicker by rememberSaveable { mutableStateOf(false) }
 
+    LaunchedEffect(Unit) {
+        viewModel.setParams(accountId, isIncomes)
+    }
 
     if (showStartPicker) {
-        val datePickerDialog = DatePickerDialog(
+        DatePickerDialog(
             context,
-            { _, year, month, dayOfMonth ->
-                startDate = LocalDate.of(year, month + 1, dayOfMonth)
+            { _, year, month, day ->
+                val newDate = LocalDate.of(year, month + 1, day)
+                viewModel.updateStartDate(newDate)
                 showStartPicker = false
             },
-            startDate.year, startDate.monthValue - 1, startDate.dayOfMonth
-        )
-        datePickerDialog.setOnDismissListener {
-            showStartPicker = false
-        }
-        datePickerDialog.show()
+            startDate.year,
+            startDate.monthValue - 1,
+            startDate.dayOfMonth
+        ).apply {
+            setOnDismissListener { showStartPicker = false }
+        }.show()
     }
 
     if (showEndPicker) {
-        val datePickerDialog = DatePickerDialog(
+        DatePickerDialog(
             context,
-            { _, year, month, dayOfMonth ->
-                endDate = LocalDate.of(year, month + 1, dayOfMonth)
+            { _, year, month, day ->
+                val newDate = LocalDate.of(year, month + 1, day)
+                viewModel.updateEndDate(newDate)
                 showEndPicker = false
             },
-            endDate.year, endDate.monthValue - 1, endDate.dayOfMonth
-        )
-        datePickerDialog.setOnDismissListener {
-            showEndPicker = false
-        }
-        datePickerDialog.show()
+            endDate.year,
+            endDate.monthValue - 1,
+            endDate.dayOfMonth
+        ).apply {
+            setOnDismissListener { showEndPicker = false }
+        }.show()
+
     }
 
-
-    LaunchedEffect(startDate, endDate) {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        viewModel.loadTransactions(
-            accountId,
-            startDate.format(formatter),
-            endDate.format(formatter)
-        )
-    }
-
-    Column {
-        MainListItem(
-            mainText = stringResource(id = R.string.start),
-            color = colorResource(id = R.color.secondary_green),
-            huggingHeight = true,
-            trailing = {
-                Text(
-                    text = startDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy")),
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_more_vert),
-                    contentDescription = null,
-                )
-            },
-            modifier = Modifier.clickable { showStartPicker = true }
-        )
-        MainListItem(
-            mainText = stringResource(id = R.string.end),
-            color = colorResource(id = R.color.secondary_green),
-            huggingHeight = true,
-            trailing = {
-                Text(
-                    text = endDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy")),
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_more_vert),
-                    contentDescription = null,
-                )
-            },
-            modifier = Modifier.clickable { showEndPicker = true }
-        )
-
-
-        ListLoader(uiState) {
-            val expenses =
-                (uiState as UiState.Success).data.filter { it.category.isIncome == isIncomes }
-                    .sortedByDescending { it.transactionDate }
-
+        Column {
             MainListItem(
-                mainText = stringResource(id = R.string.sum),
+                mainText = stringResource(id = R.string.start),
                 color = colorResource(id = R.color.secondary_green),
                 huggingHeight = true,
                 trailing = {
                     Text(
-                        text = "${expenses.sumOf { it.amount }} ${expenses.firstOrNull()?.account?.currency?.toSymbol() ?: ""}",
+                        text = startDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy")),
                         style = MaterialTheme.typography.bodyLarge,
                     )
-                }
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_more_vert),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable { showStartPicker = true }
             )
-            HistoryList(expenses)
+            MainListItem(
+                mainText = stringResource(id = R.string.end),
+                color = colorResource(id = R.color.secondary_green),
+                huggingHeight = true,
+                trailing = {
+                    Text(
+                        text = endDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy")),
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_more_vert),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable { showEndPicker = true }
+            )
+
+
+            ListLoader(uiState) {
+                val transactions = (uiState as UiState.Success).data.list
+                val totalSum = (uiState as UiState.Success).data.totalSum
+
+                MainListItem(
+                    mainText = stringResource(id = R.string.sum),
+                    color = colorResource(id = R.color.secondary_green),
+                    huggingHeight = true,
+                    trailing = {
+                        Text(
+                            text = "$totalSum ${transactions.firstOrNull()?.currency ?: ""}",
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                    }
+                )
+                HistoryList(transactions)
+            }
         }
 
-
-    }
 }
 
 
-
-
-
 @Composable
-fun HistoryList(transactions: List<Transaction>) {
-    val zoneId = ZoneId.systemDefault()
-    val formatter = DateTimeFormatter.ofPattern("dd.MM.yy   HH:mm").withZone(zoneId)
+fun HistoryList(transactions: List<TransactionUi>) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
     ) {
 
         items(transactions, key = { it.id }) { expense ->
             MainListItem(
-                emoji = expense.category.emoji,
-                mainText = expense.category.name,
+                emoji = expense.emoji,
+                mainText = expense.categoryName,
                 subtitle = expense.comment,
                 trailing = {
                     Row(
@@ -184,12 +167,12 @@ fun HistoryList(transactions: List<Transaction>) {
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = "${expense.amount} ${expense.account.currency.toSymbol()}",
+                                text = "${expense.amount} ${expense.currency}",
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = colorResource(id = R.color.on_surface),
                             )
                             Text(
-                                text = formatter.format(expense.transactionDate),
+                                text = expense.transactionDate,
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = colorResource(id = R.color.on_surface),
                             )
@@ -203,9 +186,9 @@ fun HistoryList(transactions: List<Transaction>) {
                 }
             )
 
-
         }
     }
 }
+
 
 

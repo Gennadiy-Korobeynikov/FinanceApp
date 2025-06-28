@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.gena_korobeynikov.yandexfinance.ui.UiState
+import com.gena_korobeynikov.yandexfinance.ui.states.UiState
 
 
 @Composable

@@ -20,74 +20,63 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.gena_korobeynikov.yandexfinance.R
-import com.gena_korobeynikov.yandexfinance.common.NetworkModule
-import com.gena_korobeynikov.yandexfinance.data.toSymbol
-import com.gena_korobeynikov.yandexfinance.domain.Transaction
-import com.gena_korobeynikov.yandexfinance.data.repo_Implementations.TransactionsRepositoryImpl
-import com.gena_korobeynikov.yandexfinance.ui.UiState
+import com.gena_korobeynikov.yandexfinance.ui.states.UiState
 import com.gena_korobeynikov.yandexfinance.ui.components.ListLoader
 import com.gena_korobeynikov.yandexfinance.ui.components.MainListItem
-import com.gena_korobeynikov.yandexfinance.ui.states.TransactionUiState
-import com.gena_korobeynikov.yandexfinance.ui.viewModels.TransactionsViewModel
+import com.gena_korobeynikov.yandexfinance.ui.models.TransactionUi
+import com.gena_korobeynikov.yandexfinance.ui.viewModels.HistoryViewModel
+import com.gena_korobeynikov.yandexfinance.ui.viewModels.TodayTransactionsViewModel
 import java.time.LocalDate
-import java.time.ZoneId
 
 
 @Composable
-fun ExpensesScreen(
-    accountId: Long = 1, // Стоит по умолчанию для корректного вывода (для проверяющих), можно поменять
-) {
+fun ExpensesScreen() {
     val viewModel = remember {
-        TransactionsViewModel(
-            repository = TransactionsRepositoryImpl(api = NetworkModule.transactionsApi)
-        )
+        TodayTransactionsViewModel()
     }
     val uiState by viewModel.uiState.collectAsState()
+    val accountId = 1L // Стоит по умолчанию для корректного вывода (для проверяющих), можно поменять
 
     LaunchedEffect(accountId) {
-        viewModel.loadTransactions(accountId)
+        viewModel.loadTransactions(accountId, isIncome = false)
     }
 
     ListLoader(
         uiState
     ) {
-        val transactions = (uiState as UiState.Success).data
-        ExpensesList(transactions)
+        val expensesToday = (uiState as UiState.Success).data.list
+        val totalSum = (uiState as UiState.Success).data.totalSum
+        ExpensesList(expensesToday, totalSum)
     }
 }
 
 
 
 @Composable
-fun ExpensesList(transactions: List<Transaction>) {
-    val zone = ZoneId.systemDefault()
-    val expensesToday = transactions.filter { !it.category.isIncome } // Только расходы
-        .filter { it.transactionDate.atZone(zone).toLocalDate() == LocalDate.now(zone) } // Сегодня
-        .sortedByDescending { it.transactionDate }// Сначала новые
-
+fun ExpensesList(expensesToday: List<TransactionUi>, totalSum : String) {
     Column {
+
         MainListItem(
             mainText = "Всего",
             color = colorResource(id = R.color.secondary_green),
             huggingHeight = true,
             trailing = {
                 Text(
-                    text = "${expensesToday.sumOf { it.amount }} ${expensesToday.firstOrNull()?.account?.currency?.toSymbol() ?: "₽"}",
+                    text = "$totalSum ${expensesToday.firstOrNull()?.currency ?: "₽"}",
                     style = MaterialTheme.typography.bodyLarge,
                 )
             }
         )
 
 
+
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
         ) {
-            items(
-                expensesToday,
-                key = { it.id }) { expense ->
+            items(expensesToday, key = { it.id }) { expense ->
                 MainListItem(
-                    emoji = expense.category.emoji,
-                    mainText = expense.category.name,
+                    emoji = expense.emoji,
+                    mainText = expense.categoryName,
                     subtitle = expense.comment,
                     trailing = {
                         Row(
@@ -95,7 +84,7 @@ fun ExpensesList(transactions: List<Transaction>) {
                             horizontalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             Text(
-                                text = "${expense.amount} ${expense.account.currency.toSymbol()}",
+                                text = "${expense.amount} ${expense.currency}",
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = colorResource(id = R.color.on_surface),
                             )

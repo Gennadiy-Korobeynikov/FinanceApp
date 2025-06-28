@@ -1,0 +1,31 @@
+package com.gena_korobeynikov.yandexfinance.ui.viewModels
+
+import com.gena_korobeynikov.yandexfinance.di.TemporaryServiceLocator
+import com.gena_korobeynikov.yandexfinance.domain.models.Transaction
+import com.gena_korobeynikov.yandexfinance.domain.use_cases.GetTransactionsForPeriodUseCase
+import com.gena_korobeynikov.yandexfinance.domain.use_cases.totalAmount
+import com.gena_korobeynikov.yandexfinance.ui.mapers.toMoneyFormat
+import com.gena_korobeynikov.yandexfinance.ui.mapers.toUi
+import com.gena_korobeynikov.yandexfinance.ui.models.TransactionListUi
+import java.time.LocalDate
+
+/**Для начльного экрана расходов / доходов - за сегодняшний день**/
+class TodayTransactionsViewModel(
+    private val getTransactionsForPeriod : GetTransactionsForPeriodUseCase =
+        GetTransactionsForPeriodUseCase(TemporaryServiceLocator.transactionsRepository),
+) : BaseLoadViewModel<List<Transaction>, TransactionListUi>() {
+
+    val today = LocalDate.now().toString()
+
+    fun loadTransactions(accountId : Long, isIncome : Boolean) {
+        load(
+            mapper = { list ->
+                TransactionListUi(
+                    list = list.map { it.toUi() },
+                    totalSum = list.totalAmount().toMoneyFormat()
+                )
+            },
+            block = { getTransactionsForPeriod(accountId, today, today, isIncome) }
+        )
+    }
+}
