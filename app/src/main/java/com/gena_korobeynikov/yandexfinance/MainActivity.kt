@@ -1,4 +1,4 @@
-package com.gena_korobeynikov.yandexfinance.common
+package com.gena_korobeynikov.yandexfinance
 
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo

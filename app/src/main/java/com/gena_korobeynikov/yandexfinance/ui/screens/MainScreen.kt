@@ -90,7 +90,7 @@ fun MainScreen() {
                             IconButton(onClick = { navController.popBackStack() }) {
                                 Icon(
                                     painter = painterResource(R.drawable.ic_back),
-                                    contentDescription = "Back"
+                                    contentDescription = "Назад"
                                 )
                             }
                         }

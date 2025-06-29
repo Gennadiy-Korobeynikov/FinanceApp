@@ -1,16 +1,11 @@
-package com.gena_korobeynikov.yandexfinance.ui.mapers
+package com.gena_korobeynikov.yandexfinance.ui.mappers
 
-import com.gena_korobeynikov.yandexfinance.data.dto.AccountDto
-import com.gena_korobeynikov.yandexfinance.data.dto.CategoryDto
-import com.gena_korobeynikov.yandexfinance.data.dto.TransactionDto
 import com.gena_korobeynikov.yandexfinance.domain.models.Account
 import com.gena_korobeynikov.yandexfinance.domain.models.Category
 import com.gena_korobeynikov.yandexfinance.domain.models.Transaction
 import com.gena_korobeynikov.yandexfinance.ui.models.AccountUi
 import com.gena_korobeynikov.yandexfinance.ui.models.CategoryUi
 import com.gena_korobeynikov.yandexfinance.ui.models.TransactionUi
-
-import java.time.Instant
 
 fun Transaction.toUi(): TransactionUi {
     return TransactionUi(

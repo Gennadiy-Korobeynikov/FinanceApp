@@ -4,8 +4,8 @@ import com.gena_korobeynikov.yandexfinance.di.TemporaryServiceLocator
 import com.gena_korobeynikov.yandexfinance.domain.models.Transaction
 import com.gena_korobeynikov.yandexfinance.domain.use_cases.GetTransactionsForPeriodUseCase
 import com.gena_korobeynikov.yandexfinance.domain.use_cases.totalAmount
-import com.gena_korobeynikov.yandexfinance.ui.mapers.toMoneyFormat
-import com.gena_korobeynikov.yandexfinance.ui.mapers.toUi
+import com.gena_korobeynikov.yandexfinance.ui.mappers.toMoneyFormat
+import com.gena_korobeynikov.yandexfinance.ui.mappers.toUi
 import com.gena_korobeynikov.yandexfinance.ui.models.TransactionListUi
 import java.time.LocalDate
 

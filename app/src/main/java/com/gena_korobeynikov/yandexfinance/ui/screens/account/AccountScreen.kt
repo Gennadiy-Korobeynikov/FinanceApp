@@ -1,4 +1,4 @@
-package com.gena_korobeynikov.yandexfinance.ui.screens
+package com.gena_korobeynikov.yandexfinance.ui.screens.account
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -19,10 +19,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.gena_korobeynikov.yandexfinance.R
-import com.gena_korobeynikov.yandexfinance.ui.mapers.toSymbol
-import com.gena_korobeynikov.yandexfinance.domain.models.Account
 import com.gena_korobeynikov.yandexfinance.ui.states.UiState
 import com.gena_korobeynikov.yandexfinance.ui.components.ListLoader
 import com.gena_korobeynikov.yandexfinance.ui.components.MainListItem
@@ -58,7 +57,7 @@ fun AccountInfo(
 ) {
     Column {
         MainListItem(
-            mainText = "Баланс",
+            mainText = stringResource(id = R.string.balance),
             color = colorResource(id = R.color.secondary_green),
             huggingHeight = true,
             emoji = "💰",
@@ -79,7 +78,7 @@ fun AccountInfo(
         )
 
         MainListItem(
-            mainText = "Валюта",
+            mainText = stringResource(R.string.currency),
             color = colorResource(id = R.color.secondary_green),
             huggingHeight = true,
             trailing = {

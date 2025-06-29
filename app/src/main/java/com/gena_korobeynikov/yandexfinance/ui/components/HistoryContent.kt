@@ -1,4 +1,4 @@
-package com.gena_korobeynikov.yandexfinance.ui.screens
+package com.gena_korobeynikov.yandexfinance.ui.components
 
 import android.app.DatePickerDialog
 import androidx.compose.foundation.clickable
@@ -12,8 +12,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -25,37 +23,27 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gena_korobeynikov.yandexfinance.R
-import com.gena_korobeynikov.yandexfinance.ui.states.UiState
-import com.gena_korobeynikov.yandexfinance.ui.components.ListLoader
-import com.gena_korobeynikov.yandexfinance.ui.components.MainListItem
+import com.gena_korobeynikov.yandexfinance.ui.models.TransactionListUi
 import com.gena_korobeynikov.yandexfinance.ui.models.TransactionUi
+import com.gena_korobeynikov.yandexfinance.ui.states.UiState
 import com.gena_korobeynikov.yandexfinance.ui.viewModels.HistoryViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-
 @Composable
-fun HistoryScreen(
-    isIncomes: Boolean = false,
-    viewModel: HistoryViewModel = viewModel()
+fun HistoryContent(
+    viewModel: HistoryViewModel,
+    startDate: LocalDate,
+    endDate: LocalDate,
+    uiState: UiState<TransactionListUi>,
 ) {
-
-    val uiState by viewModel.uiState.collectAsState()
-    val startDate by viewModel.startDate.collectAsState()
-    val endDate by viewModel.endDate.collectAsState()
-
-    val accountId: Long = 1
 
     val context = LocalContext.current
     var showStartPicker by rememberSaveable { mutableStateOf(false) }
     var showEndPicker by rememberSaveable { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        viewModel.setParams(accountId, isIncomes)
-    }
-
+    // Календарь на начало
     if (showStartPicker) {
         DatePickerDialog(
             context,
@@ -72,6 +60,7 @@ fun HistoryScreen(
         }.show()
     }
 
+    // Календарь на конец
     if (showEndPicker) {
         DatePickerDialog(
             context,
@@ -86,63 +75,60 @@ fun HistoryScreen(
         ).apply {
             setOnDismissListener { showEndPicker = false }
         }.show()
-
     }
 
-        Column {
-            MainListItem(
-                mainText = stringResource(id = R.string.start),
-                color = colorResource(id = R.color.secondary_green),
-                huggingHeight = true,
-                trailing = {
-                    Text(
-                        text = startDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy")),
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_more_vert),
-                        contentDescription = null,
-                    )
-                },
-                modifier = Modifier.clickable { showStartPicker = true }
-            )
-            MainListItem(
-                mainText = stringResource(id = R.string.end),
-                color = colorResource(id = R.color.secondary_green),
-                huggingHeight = true,
-                trailing = {
-                    Text(
-                        text = endDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy")),
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_more_vert),
-                        contentDescription = null,
-                    )
-                },
-                modifier = Modifier.clickable { showEndPicker = true }
-            )
-
-
-            ListLoader(uiState) {
-                val transactions = (uiState as UiState.Success).data.list
-                val totalSum = (uiState as UiState.Success).data.totalSum
-
-                MainListItem(
-                    mainText = stringResource(id = R.string.sum),
-                    color = colorResource(id = R.color.secondary_green),
-                    huggingHeight = true,
-                    trailing = {
-                        Text(
-                            text = "$totalSum ${transactions.firstOrNull()?.currency ?: ""}",
-                            style = MaterialTheme.typography.bodyLarge,
-                        )
-                    }
+    Column {
+        MainListItem(
+            mainText = stringResource(id = R.string.start),
+            color = colorResource(id = R.color.secondary_green),
+            huggingHeight = true,
+            trailing = {
+                Text(
+                    text = startDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy")),
+                    style = MaterialTheme.typography.bodyLarge,
                 )
-                HistoryList(transactions)
-            }
-        }
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_more_vert),
+                    contentDescription = null,
+                )
+            },
+            modifier = Modifier.clickable { showStartPicker = true }
+        )
+        MainListItem(
+            mainText = stringResource(id = R.string.end),
+            color = colorResource(id = R.color.secondary_green),
+            huggingHeight = true,
+            trailing = {
+                Text(
+                    text = endDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy")),
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_more_vert),
+                    contentDescription = null,
+                )
+            },
+            modifier = Modifier.clickable { showEndPicker = true }
+        )
 
+        ListLoader(uiState) {
+            val transactions = (uiState as UiState.Success).data.list
+            val totalSum = (uiState as UiState.Success).data.totalSum
+
+            MainListItem(
+                mainText = stringResource(id = R.string.sum),
+                color = colorResource(id = R.color.secondary_green),
+                huggingHeight = true,
+                trailing = {
+                    Text(
+                        text = "$totalSum ${transactions.firstOrNull()?.currency ?: ""}",
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                }
+            )
+            HistoryList(transactions)
+        }
+    }
 }
 
 
@@ -189,6 +175,3 @@ fun HistoryList(transactions: List<TransactionUi>) {
         }
     }
 }
-
-
-

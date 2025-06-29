@@ -1,4 +1,4 @@
-package com.gena_korobeynikov.yandexfinance.ui.mapers
+package com.gena_korobeynikov.yandexfinance.ui.mappers
 import java.text.DecimalFormatSymbols
 import java.math.BigDecimal
 import java.util.Locale

@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.gena_korobeynikov.yandexfinance.ui.screens
+package com.gena_korobeynikov.yandexfinance.ui.screens.categories
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,12 +26,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gena_korobeynikov.yandexfinance.R
-import com.gena_korobeynikov.yandexfinance.common.NetworkModule
-import com.gena_korobeynikov.yandexfinance.data.repo_Implementations.CategoriesRepositoryImpl
-import com.gena_korobeynikov.yandexfinance.domain.models.Category
 import com.gena_korobeynikov.yandexfinance.ui.states.UiState
 import com.gena_korobeynikov.yandexfinance.ui.components.ListLoader
 import com.gena_korobeynikov.yandexfinance.ui.components.MainListItem
@@ -95,14 +93,14 @@ fun SearchField() {
         value = text,
         onValueChange = { text = it },
         placeholder = { Text(
-            text = "Найти статью",
+            text = stringResource(R.string.find_category),
             style = MaterialTheme.typography.bodyLarge,
             color = colorResource(id=R.color.on_surface_variant)) },
 
         trailingIcon = {
             Icon(
                 painter = painterResource(id = R.drawable.ic_search),
-                contentDescription = "Найти статью",
+                contentDescription = stringResource(R.string.find_category),
             )
         },
         colors = TextFieldDefaults.colors(
