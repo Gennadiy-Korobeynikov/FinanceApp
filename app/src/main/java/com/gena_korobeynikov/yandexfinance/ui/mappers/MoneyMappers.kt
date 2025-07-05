@@ -1,4 +1,5 @@
-package com.gena_korobeynikov.yandexfinance.ui.mapers
+package com.gena_korobeynikov.yandexfinance.ui.mappers
+import com.gena_korobeynikov.yandexfinance.ui.models.Currencies
 import java.text.DecimalFormatSymbols
 import java.math.BigDecimal
 import java.util.Locale
@@ -6,10 +7,10 @@ import java.text.DecimalFormat
 
 fun String.toSymbol(): String {
     return when (this) {
-        "RUB" -> "₽"
-        "USD" -> "$"
-        "EUR" -> "€"
-        "GBP" -> "£"
+        "RUB" -> Currencies.ruble.symbol
+        "USD" -> Currencies.dollar.symbol
+        "EUR" -> Currencies.euro.symbol
+        //"GBP" -> "£"
         else -> this
     }
 }

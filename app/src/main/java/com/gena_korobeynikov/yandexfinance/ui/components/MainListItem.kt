@@ -52,8 +52,7 @@ fun MainListItem(
     trailing: (@Composable () -> Unit)? = null,
     color: Color? = null,
     huggingHeight: Boolean = false,
-    emojiWhiteBg : Boolean = false
-
+    emojiWhiteBg : Boolean = false,
 ) {
 
     Card(
@@ -64,7 +63,6 @@ fun MainListItem(
                 else Modifier.height(70.dp)
             ),
         shape = RectangleShape,
-
         colors =  if (color != null) CardDefaults.cardColors(containerColor = color)
                 else CardDefaults.cardColors(containerColor = colorResource(id= R.color.surface))
     ) {
@@ -123,7 +121,8 @@ fun MainListItem(
                     text = mainText,
                     style = MaterialTheme.typography.bodyLarge,
                     color = colorResource(id = R.color.on_surface),
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
                 )
 
                 if (subtitle != null) {
@@ -131,7 +130,8 @@ fun MainListItem(
                         text = subtitle,
                         style = MaterialTheme.typography.bodyMedium,
                         color= colorResource(id= R.color.on_surface_variant),
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
                     )
 
                 }
@@ -144,7 +144,6 @@ fun MainListItem(
     HorizontalDivider(
         modifier = Modifier
             .fillMaxWidth(),
-        // .padding(start = 16.dp),
         thickness = 1.dp,
         color = colorResource(id = R.color.outline_variant)
     )

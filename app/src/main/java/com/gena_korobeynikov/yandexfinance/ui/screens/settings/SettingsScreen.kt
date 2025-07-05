@@ -1,4 +1,4 @@
-package com.gena_korobeynikov.yandexfinance.ui.screens
+package com.gena_korobeynikov.yandexfinance.ui.screens.settings
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height

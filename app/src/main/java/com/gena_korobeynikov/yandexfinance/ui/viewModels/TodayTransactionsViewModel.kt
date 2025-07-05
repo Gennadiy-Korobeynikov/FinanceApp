@@ -2,10 +2,10 @@ package com.gena_korobeynikov.yandexfinance.ui.viewModels
 
 import com.gena_korobeynikov.yandexfinance.di.TemporaryServiceLocator
 import com.gena_korobeynikov.yandexfinance.domain.models.Transaction
-import com.gena_korobeynikov.yandexfinance.domain.use_cases.GetTransactionsForPeriodUseCase
-import com.gena_korobeynikov.yandexfinance.domain.use_cases.totalAmount
-import com.gena_korobeynikov.yandexfinance.ui.mapers.toMoneyFormat
-import com.gena_korobeynikov.yandexfinance.ui.mapers.toUi
+import com.gena_korobeynikov.yandexfinance.domain.use_cases.transactions.GetTransactionsForPeriodUseCase
+import com.gena_korobeynikov.yandexfinance.domain.use_cases.transactions.totalAmount
+import com.gena_korobeynikov.yandexfinance.ui.mappers.toMoneyFormat
+import com.gena_korobeynikov.yandexfinance.ui.mappers.toUi
 import com.gena_korobeynikov.yandexfinance.ui.models.TransactionListUi
 import java.time.LocalDate
 
@@ -15,7 +15,7 @@ class TodayTransactionsViewModel(
         GetTransactionsForPeriodUseCase(TemporaryServiceLocator.transactionsRepository),
 ) : BaseLoadViewModel<List<Transaction>, TransactionListUi>() {
 
-    val today = LocalDate.now().toString()
+    private val today = LocalDate.now().toString()
 
     fun loadTransactions(accountId : Long, isIncome : Boolean) {
         load(

@@ -1,8 +1,6 @@
-package com.gena_korobeynikov.yandexfinance.domain.use_cases
+package com.gena_korobeynikov.yandexfinance.domain.use_cases.categories
 
-import com.gena_korobeynikov.yandexfinance.domain.models.Account
 import com.gena_korobeynikov.yandexfinance.domain.models.Category
-import com.gena_korobeynikov.yandexfinance.domain.repos.AccountRepository
 import com.gena_korobeynikov.yandexfinance.domain.repos.CategoriesRepository
 
 class GetCategoriesUseCase(

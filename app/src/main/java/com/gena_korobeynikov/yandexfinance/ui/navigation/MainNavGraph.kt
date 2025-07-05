@@ -11,11 +11,11 @@ fun NavigationGraph(navController: NavHostController) {
         navController = navController,
         startDestination = "expenses_root"
     ) {
-        expensesGraph(navController)
-        incomesNavGraph(navController)
+        expensesGraph()
+        incomesNavGraph()
         accountNavGraph(navController)
-        categoriesNavGraph(navController)
-        settingsNavGraph(navController)
+        categoriesNavGraph()
+        settingsNavGraph()
     }
 }
 

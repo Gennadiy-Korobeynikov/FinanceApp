@@ -8,20 +8,21 @@ import com.gena_korobeynikov.yandexfinance.data.repo_Implementations.Transaction
 import com.gena_korobeynikov.yandexfinance.domain.repos.AccountRepository
 import com.gena_korobeynikov.yandexfinance.domain.repos.CategoriesRepository
 import com.gena_korobeynikov.yandexfinance.domain.repos.TransactionsRepository
+import kotlinx.coroutines.Dispatchers
 
-// Вр
+// Временно, до дз по внедрению DI
 object TemporaryServiceLocator {
 
     val transactionsRepository: TransactionsRepository by lazy {
-        TransactionsRepositoryImpl(NetworkModule.transactionsApi)
+        TransactionsRepositoryImpl(NetworkModule.transactionsApi, Dispatchers.IO)
     }
 
     val categoriesRepository: CategoriesRepository by lazy {
-        CategoriesRepositoryImpl(NetworkModule.categoryApi)
+        CategoriesRepositoryImpl(NetworkModule.categoryApi, Dispatchers.IO)
     }
 
     val accountRepository: AccountRepository by lazy {
-        AccountRepositoryImpl(NetworkModule.accountApi)
+        AccountRepositoryImpl(NetworkModule.accountApi, Dispatchers.IO)
     }
 
 

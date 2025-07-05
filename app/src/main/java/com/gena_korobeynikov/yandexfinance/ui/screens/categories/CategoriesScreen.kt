@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.gena_korobeynikov.yandexfinance.ui.screens
+package com.gena_korobeynikov.yandexfinance.ui.screens.categories
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,12 +26,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gena_korobeynikov.yandexfinance.R
-import com.gena_korobeynikov.yandexfinance.common.NetworkModule
-import com.gena_korobeynikov.yandexfinance.data.repo_Implementations.CategoriesRepositoryImpl
-import com.gena_korobeynikov.yandexfinance.domain.models.Category
+import com.gena_korobeynikov.yandexfinance.data.api.ACCOUNT_ID
 import com.gena_korobeynikov.yandexfinance.ui.states.UiState
 import com.gena_korobeynikov.yandexfinance.ui.components.ListLoader
 import com.gena_korobeynikov.yandexfinance.ui.components.MainListItem
@@ -41,7 +40,7 @@ import com.gena_korobeynikov.yandexfinance.ui.viewModels.CategoriesViewModel
 
 @Composable
     fun CategoriesScreen(
-        accountId : Long = 1, // Стоит по умолчанию для корректного вывода (для проверяющих), можно поменять
+    accountId : Long = ACCOUNT_ID, // Стоит по умолчанию для корректного вывода (для проверяющих), можно поменять
     ) {
     val viewModel = remember {
         CategoriesViewModel()
@@ -57,9 +56,22 @@ import com.gena_korobeynikov.yandexfinance.ui.viewModels.CategoriesViewModel
         uiState
     ) {
         val categories = (uiState as UiState.Success).data
+        var searchText by remember { mutableStateOf("") }
+
+        val filteredCategories = remember(searchText, categories) {
+            if (searchText.isBlank()) categories
+            else categories.filter {
+                it.name.contains(searchText, ignoreCase = true) // TODO
+            }
+        }
+
+
         Column {
-            SearchField()
-            CategoryList(categories)
+            SearchField(
+                text = searchText,
+                onTextChange = { searchText = it }
+            )
+            CategoryList(filteredCategories)
         }
     }
 
@@ -84,25 +96,26 @@ fun CategoryList(categories: List<CategoryUi>) {
 }
 
 @Composable
-fun SearchField() {
-    var text by remember { mutableStateOf("") }
-
+fun SearchField(
+    text: String,
+    onTextChange: (String) -> Unit
+) {
     TextField(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp),
 
         value = text,
-        onValueChange = { text = it },
+        onValueChange = onTextChange,
         placeholder = { Text(
-            text = "Найти статью",
+            text = stringResource(R.string.find_category),
             style = MaterialTheme.typography.bodyLarge,
             color = colorResource(id=R.color.on_surface_variant)) },
 
         trailingIcon = {
             Icon(
                 painter = painterResource(id = R.drawable.ic_search),
-                contentDescription = "Найти статью",
+                contentDescription = stringResource(R.string.find_category),
             )
         },
         colors = TextFieldDefaults.colors(
@@ -112,14 +125,13 @@ fun SearchField() {
 
         ),
         shape = RectangleShape,
-
     )
 }
-
-@Preview(showBackground = true, backgroundColor = 0xFFF5F5F5)
-@Composable
-fun SearchFieldPreview() {
-    MaterialTheme {
-        SearchField()
-    }
-}
+//
+//@Preview(showBackground = true, backgroundColor = 0xFFF5F5F5)
+//@Composable
+//fun SearchFieldPreview() {
+//    MaterialTheme {
+//        SearchField()
+//    }
+//}
