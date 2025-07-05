@@ -67,7 +67,7 @@ fun MainScreen() {
 
 
             topBar = {
-                val currentScreen = Screen.all.find { it.route == currentRoute } ?: Screen.Expenses
+                val currentScreen = Screen.fromRoute(currentRoute) ?: Screen.Expenses
 
                 CenterAlignedTopAppBar(
                     windowInsets = TopAppBarDefaults.windowInsets,

@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">YandexFinance</string>
 
+
+
+    <!--  Common  -->
+    <string name="cancel">Отмена</string>
+
     <!--    BottomBarItems   -->
     <string name="expenses">Расходы</string>
     <string name="expense_categories">Статьи</string>

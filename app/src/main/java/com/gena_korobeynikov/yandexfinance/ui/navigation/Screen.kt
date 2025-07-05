@@ -14,6 +14,7 @@ object ScreenRoutes {
     const val Incomes = "incomes"
     const val IncomesHistory = "incomes_history"
     const val Account = "account"
+    const val EditAccount = "edit_account"
     const val ExpenseCategories = "expense_categories"
     const val Settings = "settings"
 }
@@ -94,9 +95,14 @@ sealed class Screen(
         navBarIconRes = R.drawable.ic_navbar_account,
         topBarBtnIconRes = R.drawable.ic_edit,
         topBarBtnAction = { navController ->
-            Log.i("TopBar", "Edit account")
+            navController.navigate("${ScreenRoutes.EditAccount}/1")
         },
-        addBtnAction = { /* TODO */ }
+    )
+
+    data object EditAccount : Screen(
+        route = ScreenRoutes.EditAccount,
+        root = AccountRoot,
+        titleRes = R.string.account_title,
     )
 
     // Categories
@@ -128,14 +134,18 @@ sealed class Screen(
         val all = listOf(
             ExpensesRoot, Expenses, ExpensesHistory,
             IncomesRoot, Incomes, IncomesHistory,
-            AccountRoot, Account,
+            AccountRoot, Account, EditAccount,
             CategoriesRoot, Categories,
             SettingsRoot, Settings
         )
 
         fun fromRoute(route: String?): Screen? =
-            all.find { it.route == route }
+            all.find { screen ->
+                println("Comparing: route=$route, screen.route=${screen.route}, substringBefore=${route?.substringBefore("/{")}")
 
+                route == screen.route ||
+                        (route != null && route.contains("{") && screen.route.startsWith(route.substringBefore("/{")) == true)
+            }
         //Определить корневой экран по маршруту
         fun rootOf(route: String?): Screen? {
             val screen = fromRoute(route)

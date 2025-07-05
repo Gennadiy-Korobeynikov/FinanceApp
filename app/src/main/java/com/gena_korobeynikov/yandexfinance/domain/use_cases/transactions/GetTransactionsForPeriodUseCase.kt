@@ -1,9 +1,8 @@
-package com.gena_korobeynikov.yandexfinance.domain.use_cases
+package com.gena_korobeynikov.yandexfinance.domain.use_cases.transactions
 
 import com.gena_korobeynikov.yandexfinance.domain.models.Transaction
 import com.gena_korobeynikov.yandexfinance.domain.repos.TransactionsRepository
 import java.math.BigDecimal
-import java.time.LocalDate
 
 class GetTransactionsForPeriodUseCase(
     private val repository: TransactionsRepository,

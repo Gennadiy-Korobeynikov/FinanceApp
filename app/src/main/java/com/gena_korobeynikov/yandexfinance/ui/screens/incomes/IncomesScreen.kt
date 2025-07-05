@@ -37,7 +37,7 @@ import com.gena_korobeynikov.yandexfinance.ui.viewModels.TodayTransactionsViewMo
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(accountId) {
-        viewModel.loadTransactions(accountId,isIncome = false)
+        viewModel.loadTransactions(accountId,isIncome = true)
     }
 
     ListLoader(
