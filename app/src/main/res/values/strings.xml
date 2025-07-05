@@ -2,13 +2,18 @@
     <string name="app_name">YandexFinance</string>
 
 
+
+    <!--  Common  -->
+    <string name="cancel">Отмена</string>
+
+    <!--    BottomBarItems   -->
     <string name="expenses">Расходы</string>
     <string name="expense_categories">Статьи</string>
     <string name="incomes">Доходы</string>
     <string name="settings">Настройки</string>
     <string name="account">Счет</string>
 
-
+    <!--    TopBarTitles   -->
     <string name="expenses_title">Расходы сегодня</string>
     <string name="expense_categories_title">Мои статьи</string>
     <string name="incomes_title">Доходы сегодня</string>
@@ -17,7 +22,7 @@
     <string name="history_title">Моя история</string>
 
 
-
+    <!--    Settings   -->
     <string name="light_theme_auto">Тёмная тема</string>
     <string name="main_color">Основной цвет</string>
     <string name="sounds">Звуки</string>
@@ -28,9 +33,18 @@
     <string name="about">О программе</string>
 
 
+    <!--    Account   -->
+    <string name="balance">Баланс</string>
+    <string name="currency">Валюта</string>
+
+    <!--  Categories  -->
+    <string name="find_category">Найти статью</string>
+
+    <!--  Transactions  -->
     <string name="start">Начало</string>
     <string name="end">Конец</string>
     <string name="sum">Сумма</string>
+    <string name="total">Всего</string>
 
 
 </resources>

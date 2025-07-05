@@ -5,6 +5,7 @@
 
     <color name="primary_green">#FF2AE881</color>
     <color name="secondary_green">#FFD4FAE6</color>
+    <color name="error">#FFE46962</color>
 
 
     <color name="surface">#FFFEF7FF</color>
@@ -14,6 +15,7 @@
     <color name="outline_variant">#FFCAC4D0</color>
     <color name="surface_container_high">#FFECE6F0</color>
     <color name="surface_container">#FFF3EDF7</color>
+    <color name="bottomsheet_container">#FFF7F2FA</color>
 
 
 

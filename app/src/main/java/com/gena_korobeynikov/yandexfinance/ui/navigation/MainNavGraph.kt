@@ -14,8 +14,8 @@ fun NavigationGraph(navController: NavHostController) {
         expensesGraph(navController)
         incomesNavGraph(navController)
         accountNavGraph(navController)
-        categoriesNavGraph(navController)
-        settingsNavGraph(navController)
+        categoriesNavGraph()
+        settingsNavGraph()
     }
 }
 

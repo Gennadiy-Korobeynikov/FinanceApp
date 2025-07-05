@@ -49,7 +49,7 @@ fun MainScreen() {
             floatingActionButton = {
                 if (fabAction != null) {
                     FloatingActionButton(
-                        onClick = fabAction,
+                        onClick = { fabAction(navController) },
                         shape = CircleShape,
                         containerColor = colorResource(id = R.color.primary_green),
                         contentColor = Color.White,
@@ -67,7 +67,7 @@ fun MainScreen() {
 
 
             topBar = {
-                val currentScreen = Screen.all.find { it.route == currentRoute } ?: Screen.Expenses
+                val currentScreen = Screen.fromRoute(currentRoute) ?: Screen.Expenses
 
                 CenterAlignedTopAppBar(
                     windowInsets = TopAppBarDefaults.windowInsets,
@@ -90,7 +90,7 @@ fun MainScreen() {
                             IconButton(onClick = { navController.popBackStack() }) {
                                 Icon(
                                     painter = painterResource(R.drawable.ic_back),
-                                    contentDescription = "Back"
+                                    contentDescription = "Назад"
                                 )
                             }
                         }

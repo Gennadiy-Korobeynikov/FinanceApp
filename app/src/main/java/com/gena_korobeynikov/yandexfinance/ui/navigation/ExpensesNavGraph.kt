@@ -4,11 +4,14 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.gena_korobeynikov.yandexfinance.ui.screens.ExpensesScreen
-import com.gena_korobeynikov.yandexfinance.ui.screens.HistoryScreen
+import com.gena_korobeynikov.yandexfinance.ui.screens.expenses.CreateExpenseScreen
+import com.gena_korobeynikov.yandexfinance.ui.screens.expenses.ExpensesScreen
+import com.gena_korobeynikov.yandexfinance.ui.screens.expenses.ExpensesHistoryScreen
 
 
-fun NavGraphBuilder.expensesGraph(navController: NavHostController) {
+fun NavGraphBuilder.expensesGraph(
+    navController : NavHostController
+) {
     navigation(
         startDestination = Screen.Expenses.route,
         route = Screen.ExpensesRoot.route
@@ -16,8 +19,11 @@ fun NavGraphBuilder.expensesGraph(navController: NavHostController) {
         composable(Screen.Expenses.route) {
             ExpensesScreen()
         }
-        composable(Screen.History.route) {
-            HistoryScreen()
+        composable(Screen.ExpensesHistory.route) {
+            ExpensesHistoryScreen()
+        }
+        composable(Screen.CreateExpense.route) {
+            CreateExpenseScreen(navController)
         }
     }
 }
