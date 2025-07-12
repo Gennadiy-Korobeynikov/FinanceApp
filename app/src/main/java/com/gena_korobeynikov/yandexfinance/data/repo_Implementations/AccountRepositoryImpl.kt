@@ -10,8 +10,11 @@ import com.gena_korobeynikov.yandexfinance.domain.repos.AccountRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class AccountRepositoryImpl(
+@Singleton
+class AccountRepositoryImpl @Inject constructor(
     private val api: AccountApi,
     private val dispatcher: CoroutineDispatcher,
 ) : AccountRepository {

@@ -1,21 +1,24 @@
 package com.gena_korobeynikov.yandexfinance.ui.navigation
 
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.ui.res.stringResource
-import androidx.core.content.ContextCompat.getString
 import androidx.navigation.NavHostController
 import com.gena_korobeynikov.yandexfinance.R
 
 object ScreenRoutes {
     const val Expenses = "expenses"
     const val ExpensesHistory = "expenses_history"
+    const val CreateExpense = "create_expense"
+
     const val Incomes = "incomes"
     const val IncomesHistory = "incomes_history"
+    const val CreateIncome = "create_income"
+
     const val Account = "account"
     const val EditAccount = "edit_account"
-    const val ExpenseCategories = "expense_categories"
+
+    const val Categories = "expense_categories"
+
     const val Settings = "settings"
 }
 
@@ -29,7 +32,7 @@ sealed class Screen(
     @DrawableRes val navBarIconRes: Int? = null,
     @DrawableRes val topBarBtnIconRes: Int? = null,
     val topBarBtnAction: ((NavHostController) -> Unit)? = null,
-    val addBtnAction: (() -> Unit)? = null
+    val addBtnAction: ((NavHostController) -> Unit)? = null
 ) {
     // Специальный placeholder — для экранов без родителя
     data object Parentless : Screen("", titleRes = 0)
@@ -52,9 +55,10 @@ sealed class Screen(
         topBarBtnAction = { navController ->
             navController.navigate(ScreenRoutes.ExpensesHistory)
         },
-        addBtnAction = { /* TODO: add new expense */ }
+        addBtnAction = { navController ->
+            navController.navigate(ScreenRoutes.CreateExpense)
+        }
     )
-
 
     data object ExpensesHistory : Screen(
         route = ScreenRoutes.ExpensesHistory,
@@ -62,6 +66,12 @@ sealed class Screen(
         titleRes = R.string.history_title,
         topBarBtnIconRes = R.drawable.ic_analyze,
         topBarBtnAction = { /* TODO */ }
+    )
+
+    data object CreateExpense : Screen(
+        route = ScreenRoutes.CreateExpense,
+        root = ExpensesRoot,
+        titleRes = R.string.expenses,
     )
 
     // Incomes
@@ -75,7 +85,9 @@ sealed class Screen(
         topBarBtnAction = { navController ->
             navController.navigate(ScreenRoutes.IncomesHistory)
         },
-        addBtnAction = { /* TODO: add new income */ }
+        addBtnAction = { navController ->
+            navController.navigate(ScreenRoutes.CreateIncome)
+        }
     )
 
     data object IncomesHistory : Screen(
@@ -85,6 +97,13 @@ sealed class Screen(
         topBarBtnIconRes = R.drawable.ic_analyze,
         topBarBtnAction = { /* TODO */ }
     )
+
+    data object CreateIncome : Screen(
+        route = ScreenRoutes.CreateIncome,
+        root = IncomesRoot,
+        titleRes = R.string.incomes,
+    )
+
 
     // Account
     data object Account : Screen(
@@ -107,7 +126,7 @@ sealed class Screen(
 
     // Categories
     data object Categories : Screen(
-        route = ScreenRoutes.ExpenseCategories,
+        route = ScreenRoutes.Categories,
         root = CategoriesRoot,
         titleRes = R.string.expense_categories_title,
         navBarItemTitleRes = R.string.expense_categories,
@@ -132,8 +151,8 @@ sealed class Screen(
 
         // Все экраны приложения
         val all = listOf(
-            ExpensesRoot, Expenses, ExpensesHistory,
-            IncomesRoot, Incomes, IncomesHistory,
+            ExpensesRoot, Expenses, ExpensesHistory, CreateExpense,
+            IncomesRoot, Incomes, IncomesHistory, CreateIncome,
             AccountRoot, Account, EditAccount,
             CategoriesRoot, Categories,
             SettingsRoot, Settings

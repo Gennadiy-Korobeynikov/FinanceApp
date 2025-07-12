@@ -1,4 +1,4 @@
-package com.gena_korobeynikov.yandexfinance.ui.viewModels
+package com.gena_korobeynikov.yandexfinance.ui.viewModels.account
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -7,21 +7,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gena_korobeynikov.yandexfinance.data.api.ACCOUNT_ID
 import com.gena_korobeynikov.yandexfinance.data.dto.AccountDto
-import com.gena_korobeynikov.yandexfinance.di.TemporaryServiceLocator
-import com.gena_korobeynikov.yandexfinance.domain.models.Account
-import com.gena_korobeynikov.yandexfinance.domain.repos.AccountRepository
 import com.gena_korobeynikov.yandexfinance.domain.use_cases.account.GetAccountUseCase
 import com.gena_korobeynikov.yandexfinance.domain.use_cases.account.UpdateAccountUseCase
 import com.gena_korobeynikov.yandexfinance.ui.mappers.toUi
 import com.gena_korobeynikov.yandexfinance.ui.models.AccountUi
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.launch
 
-class EditAccountViewModel(
-    accountId: Long ,
-    private val accountRepository: AccountRepository = TemporaryServiceLocator.accountRepository,
-
-    private val getAccountUC: GetAccountUseCase = GetAccountUseCase(accountRepository),
-    private val updateAccountUC: UpdateAccountUseCase = UpdateAccountUseCase(accountRepository),
+class EditAccountViewModel @AssistedInject constructor(
+    @Assisted private val accountId: Long,
+    private val getAccountUC: GetAccountUseCase,
+    private val updateAccountUC: UpdateAccountUseCase
 ) : ViewModel() {
 
     var account by mutableStateOf<AccountUi?>(null)
@@ -43,5 +41,10 @@ class EditAccountViewModel(
         viewModelScope.launch {
             updateAccountUC(account)
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(accountId: Long): EditAccountViewModel
     }
 }

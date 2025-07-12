@@ -9,9 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -20,8 +18,9 @@ import androidx.navigation.NavHostController
 import com.gena_korobeynikov.yandexfinance.R
 import com.gena_korobeynikov.yandexfinance.ui.components.CurrencyBottomSheetContent
 import com.gena_korobeynikov.yandexfinance.ui.components.MainListItem
-import com.gena_korobeynikov.yandexfinance.ui.viewModels.EditAccountViewModel
+import com.gena_korobeynikov.yandexfinance.ui.viewModels.account.EditAccountViewModel
 import com.gena_korobeynikov.yandexfinance.ui.viewModels_factories.EditAccountViewModelFactory
+import com.gena_korobeynikov.yandexfinance.ui.viewModels_factories.LocalEditAccountVMFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,9 +28,13 @@ fun EditAccountScreen(
     accountId: Long,
     navController: NavHostController,
 ) {
-    val viewModel: EditAccountViewModel = viewModel(
-        factory = EditAccountViewModelFactory(accountId)
-    )
+    val assistedFactory = LocalEditAccountVMFactory.current
+    val viewModelFactory = remember(accountId) {
+        EditAccountViewModelFactory(assistedFactory, accountId)
+    }
+
+    val viewModel: EditAccountViewModel = viewModel(factory = viewModelFactory)
+
     val account = viewModel.account
     if (account != null) {
         var name by rememberSaveable { mutableStateOf(account.name) }
@@ -40,13 +43,11 @@ fun EditAccountScreen(
         var isSheetOpen by rememberSaveable { mutableStateOf(false) }
 
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
         ) {
             MainListItem(
                 emoji = "💰",
                 mainText = "Название счёта",
+                huggingHeight = true,
                 trailing = {
                     Box(
                         modifier = Modifier
@@ -68,10 +69,9 @@ fun EditAccountScreen(
                 }
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
             MainListItem(
                 mainText = "Баланс",
+                huggingHeight = true,
                 trailing = {
                     Box(
                         modifier = Modifier
@@ -103,10 +103,11 @@ fun EditAccountScreen(
                 }
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
 
             MainListItem(
                 mainText = "Валюта",
+                huggingHeight = true,
+
                 trailing = {
                     Text(
                         text = currency,

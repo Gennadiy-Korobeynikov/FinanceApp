@@ -13,27 +13,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gena_korobeynikov.yandexfinance.R
-import com.gena_korobeynikov.yandexfinance.ui.states.UiState
+import com.gena_korobeynikov.yandexfinance.data.api.ACCOUNT_ID
 import com.gena_korobeynikov.yandexfinance.ui.components.ListLoader
 import com.gena_korobeynikov.yandexfinance.ui.components.MainListItem
 import com.gena_korobeynikov.yandexfinance.ui.models.TransactionUi
-import com.gena_korobeynikov.yandexfinance.ui.viewModels.TodayTransactionsViewModel
+import com.gena_korobeynikov.yandexfinance.ui.states.UiState
+import com.gena_korobeynikov.yandexfinance.ui.viewModels.transactions.TodayTransactionsViewModel
+import com.gena_korobeynikov.yandexfinance.ui.viewModels_factories.LocalTransactionsViewModelFactory
 
 @Composable
-    fun IncomesScreen(
-        accountId: Long = 1, // Стоит по умолчанию для корректного вывода (для проверяющих), можно поменять
-    ) {
-    val viewModel = remember {
-        TodayTransactionsViewModel()
-    }
+fun IncomesScreen(
+    accountId: Long = ACCOUNT_ID, // Стоит по умолчанию для корректного вывода (для проверяющих), можно поменять
+) {
+    val factory = LocalTransactionsViewModelFactory.current
+    val viewModel: TodayTransactionsViewModel = viewModel(factory = factory)
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(accountId) {

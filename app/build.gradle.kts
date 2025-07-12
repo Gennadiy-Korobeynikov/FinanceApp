@@ -4,12 +4,9 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    //alias(libs.plugins.hilt.android)
     id("kotlin-kapt")
+    id("com.google.devtools.ksp") version "1.9.0-1.0.13"
 }
-//hilt {
-//    enableAggregatingTask = false
-//}
 
 android {
 
@@ -101,10 +98,9 @@ dependencies {
     implementation(libs.converter)
     implementation(libs.gson)
 
-    // Hilt
-//    implementation(libs.hilt.android)
-//    implementation(libs.hilt.navigation.compose)
-//    kapt(libs.hilt.android.compiler)
+
+    implementation(libs.dagger)
+    ksp(libs.dagger.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

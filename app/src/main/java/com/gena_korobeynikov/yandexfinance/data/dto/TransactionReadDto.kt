@@ -1,6 +1,6 @@
 package com.gena_korobeynikov.yandexfinance.data.dto
 
-data class TransactionDto(
+data class TransactionReadDto(
     val id: Long,
     val account : AccountDto,
     val category : CategoryDto,

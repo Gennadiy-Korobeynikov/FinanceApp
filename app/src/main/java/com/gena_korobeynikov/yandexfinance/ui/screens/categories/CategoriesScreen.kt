@@ -29,22 +29,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gena_korobeynikov.yandexfinance.R
 import com.gena_korobeynikov.yandexfinance.data.api.ACCOUNT_ID
 import com.gena_korobeynikov.yandexfinance.ui.states.UiState
 import com.gena_korobeynikov.yandexfinance.ui.components.ListLoader
 import com.gena_korobeynikov.yandexfinance.ui.components.MainListItem
 import com.gena_korobeynikov.yandexfinance.ui.models.CategoryUi
-import com.gena_korobeynikov.yandexfinance.ui.viewModels.CategoriesViewModel
+import com.gena_korobeynikov.yandexfinance.ui.viewModels.categories.CategoriesViewModel
+import com.gena_korobeynikov.yandexfinance.ui.viewModels_factories.LocalCategoriesViewModelFactory
 
 
 @Composable
     fun CategoriesScreen(
     accountId : Long = ACCOUNT_ID, // Стоит по умолчанию для корректного вывода (для проверяющих), можно поменять
     ) {
-    val viewModel = remember {
-        CategoriesViewModel()
-    }
+    val factory = LocalCategoriesViewModelFactory.current
+    val viewModel: CategoriesViewModel = viewModel(factory = factory)
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(accountId) {

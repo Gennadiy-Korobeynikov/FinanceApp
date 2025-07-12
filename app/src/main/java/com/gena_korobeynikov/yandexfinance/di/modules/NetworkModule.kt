@@ -1,42 +1,49 @@
-package com.gena_korobeynikov.yandexfinance.common
+package com.gena_korobeynikov.yandexfinance.di.modules
 
 import com.gena_korobeynikov.yandexfinance.BuildConfig
 import com.gena_korobeynikov.yandexfinance.data.api.AccountApi
 import com.gena_korobeynikov.yandexfinance.data.api.CategoriesApi
 import com.gena_korobeynikov.yandexfinance.data.api.TransactionsApi
+import dagger.Module
+import dagger.Provides
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-object NetworkModule {
-    private const val BASE_URL = "https://shmr-finance.ru/api/v1/"
+private const val BASE_URL = "https://shmr-finance.ru/api/v1/"
 
-    private val okHttpClient by lazy {
-        OkHttpClient.Builder()
-            .addInterceptor(AuthInterceptor())
-            .build()
-    }
+@Module
+class NetworkModule {
 
-    private val retrofit by lazy {
-        Retrofit.Builder()
+    @Provides
+    fun providesRetrofit(): Retrofit {
+        val okHttpClient =
+            OkHttpClient.Builder()
+                .addInterceptor(AuthInterceptor())
+                .build()
+
+        return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
+
+    }
+    @Provides
+    fun providesTransactionsApi(retrofit : Retrofit): TransactionsApi {
+       return retrofit.create(TransactionsApi::class.java)
     }
 
-    val transactionsApi: TransactionsApi by lazy {
-        retrofit.create(TransactionsApi::class.java)
+    @Provides
+    fun providesAccountApi(retrofit : Retrofit): AccountApi {
+        return retrofit.create(AccountApi::class.java)
     }
 
-    val accountApi: AccountApi by lazy {
-        retrofit.create(AccountApi::class.java)
-    }
-
-    val categoryApi: CategoriesApi by lazy {
-        retrofit.create(CategoriesApi::class.java)
+    @Provides
+    fun providesCategoryApi(retrofit : Retrofit): CategoriesApi  {
+        return retrofit.create(CategoriesApi::class.java)
     }
 
 }

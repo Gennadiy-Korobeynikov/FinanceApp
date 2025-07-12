@@ -49,7 +49,7 @@ fun MainScreen() {
             floatingActionButton = {
                 if (fabAction != null) {
                     FloatingActionButton(
-                        onClick = fabAction,
+                        onClick = { fabAction(navController) },
                         shape = CircleShape,
                         containerColor = colorResource(id = R.color.primary_green),
                         contentColor = Color.White,

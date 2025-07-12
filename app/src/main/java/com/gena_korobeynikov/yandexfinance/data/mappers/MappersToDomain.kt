@@ -2,14 +2,14 @@ package com.gena_korobeynikov.yandexfinance.data.mappers
 
 import com.gena_korobeynikov.yandexfinance.data.dto.AccountDto
 import com.gena_korobeynikov.yandexfinance.data.dto.CategoryDto
-import com.gena_korobeynikov.yandexfinance.data.dto.TransactionDto
+import com.gena_korobeynikov.yandexfinance.data.dto.TransactionReadDto
 import com.gena_korobeynikov.yandexfinance.domain.models.Account
 import com.gena_korobeynikov.yandexfinance.domain.models.Category
 import com.gena_korobeynikov.yandexfinance.domain.models.Transaction
 
 import java.time.Instant
 
-fun TransactionDto.toDomain(): Transaction {
+fun TransactionReadDto.toDomain(): Transaction {
     return Transaction(
         id = id,
         account = account.toDomain(),

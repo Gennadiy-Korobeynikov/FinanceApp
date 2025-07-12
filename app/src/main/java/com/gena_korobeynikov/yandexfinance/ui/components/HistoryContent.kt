@@ -27,7 +27,7 @@ import com.gena_korobeynikov.yandexfinance.R
 import com.gena_korobeynikov.yandexfinance.ui.models.TransactionListUi
 import com.gena_korobeynikov.yandexfinance.ui.models.TransactionUi
 import com.gena_korobeynikov.yandexfinance.ui.states.UiState
-import com.gena_korobeynikov.yandexfinance.ui.viewModels.HistoryViewModel
+import com.gena_korobeynikov.yandexfinance.ui.viewModels.transactions.HistoryViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 

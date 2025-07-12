@@ -6,15 +6,21 @@ import com.gena_korobeynikov.yandexfinance.domain.repos.CategoriesRepository
 import com.gena_korobeynikov.yandexfinance.domain.models.Category
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class CategoriesRepositoryImpl (
+@Singleton
+class CategoriesRepositoryImpl @Inject constructor(
     private val api: CategoriesApi,
     private val dispatcher: CoroutineDispatcher
 ) : CategoriesRepository {
 
-    override suspend fun getCategories(): List<Category> =
+    override suspend fun getCategories(isIncome : Boolean?): List<Category> =
         withContext(dispatcher) {
-            api.getCategories().map { it.toDomain() }
+            if (isIncome != null)
+                api.getCategories().filter { it.isIncome == isIncome }.map { it.toDomain() }
+            else
+                api.getCategories().map { it.toDomain() }
     }
 
 

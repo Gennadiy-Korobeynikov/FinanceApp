@@ -1,22 +1,22 @@
-package com.gena_korobeynikov.yandexfinance.ui.viewModels
+package com.gena_korobeynikov.yandexfinance.ui.viewModels.transactions
 
-import com.gena_korobeynikov.yandexfinance.di.TemporaryServiceLocator
+import com.gena_korobeynikov.yandexfinance.data.api.ACCOUNT_ID
 import com.gena_korobeynikov.yandexfinance.domain.models.Transaction
 import com.gena_korobeynikov.yandexfinance.domain.use_cases.transactions.GetTransactionsForPeriodUseCase
 import com.gena_korobeynikov.yandexfinance.domain.use_cases.transactions.totalAmount
 import com.gena_korobeynikov.yandexfinance.ui.mappers.toMoneyFormat
 import com.gena_korobeynikov.yandexfinance.ui.mappers.toUi
 import com.gena_korobeynikov.yandexfinance.ui.models.TransactionListUi
+import com.gena_korobeynikov.yandexfinance.ui.viewModels.BaseLoadViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import javax.inject.Inject
 
-
-class HistoryViewModel(
-    private val getTransactionsForPeriod : GetTransactionsForPeriodUseCase =
-        GetTransactionsForPeriodUseCase(TemporaryServiceLocator.transactionsRepository),
+class HistoryViewModel @Inject constructor(
+    private val getTransactionsForPeriod : GetTransactionsForPeriodUseCase
 ) : BaseLoadViewModel<List<Transaction>, TransactionListUi>() {
 
     private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
@@ -27,7 +27,7 @@ class HistoryViewModel(
     private val _endDate = MutableStateFlow(LocalDate.now())
     val endDate: StateFlow<LocalDate> = _endDate.asStateFlow()
 
-    private var accountId: Long = 1L
+    private var accountId: Long = ACCOUNT_ID
     private var isIncome: Boolean = false
 
     init {
