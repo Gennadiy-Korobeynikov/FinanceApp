@@ -9,10 +9,12 @@ object ScreenRoutes {
     const val Expenses = "expenses"
     const val ExpensesHistory = "expenses_history"
     const val CreateExpense = "create_expense"
+    const val EditExpense = "edit_expense"
 
     const val Incomes = "incomes"
     const val IncomesHistory = "incomes_history"
     const val CreateIncome = "create_income"
+    const val EditIncome = "edit_income"
 
     const val Account = "account"
     const val EditAccount = "edit_account"
@@ -74,6 +76,12 @@ sealed class Screen(
         titleRes = R.string.expenses,
     )
 
+    data object EditExpense : Screen(
+        route = ScreenRoutes.EditExpense,
+        root = ExpensesRoot,
+        titleRes = R.string.expenses,
+    )
+
     // Incomes
     data object Incomes : Screen(
         route = ScreenRoutes.Incomes,
@@ -102,6 +110,13 @@ sealed class Screen(
         route = ScreenRoutes.CreateIncome,
         root = IncomesRoot,
         titleRes = R.string.incomes,
+    )
+
+
+    data object EditIncome : Screen(
+        route = ScreenRoutes.EditIncome,
+        root = IncomesRoot,
+        titleRes = R.string.expenses,
     )
 
 
@@ -151,8 +166,8 @@ sealed class Screen(
 
         // Все экраны приложения
         val all = listOf(
-            ExpensesRoot, Expenses, ExpensesHistory, CreateExpense,
-            IncomesRoot, Incomes, IncomesHistory, CreateIncome,
+            ExpensesRoot, Expenses, ExpensesHistory, CreateExpense, EditExpense,
+            IncomesRoot, Incomes, IncomesHistory, CreateIncome, EditIncome,
             AccountRoot, Account, EditAccount,
             CategoriesRoot, Categories,
             SettingsRoot, Settings
@@ -160,8 +175,6 @@ sealed class Screen(
 
         fun fromRoute(route: String?): Screen? =
             all.find { screen ->
-                println("Comparing: route=$route, screen.route=${screen.route}, substringBefore=${route?.substringBefore("/{")}")
-
                 route == screen.route ||
                         (route != null && route.contains("{") && screen.route.startsWith(route.substringBefore("/{")) == true)
             }

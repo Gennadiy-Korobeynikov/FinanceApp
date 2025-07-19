@@ -2,7 +2,7 @@ package com.gena_korobeynikov.yandexfinance.domain.use_cases.categories
 
 import com.gena_korobeynikov.yandexfinance.di.scopes.CategoriesScope
 import com.gena_korobeynikov.yandexfinance.domain.models.Category
-import com.gena_korobeynikov.yandexfinance.domain.repos.CategoriesRepository
+import com.gena_korobeynikov.yandexfinance.domain.repos.categories.CategoriesRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 

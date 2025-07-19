@@ -1,9 +1,12 @@
 package com.gena_korobeynikov.yandexfinance.di.modules
 
+import android.app.Application
 import com.gena_korobeynikov.yandexfinance.BuildConfig
 import com.gena_korobeynikov.yandexfinance.data.api.AccountApi
 import com.gena_korobeynikov.yandexfinance.data.api.CategoriesApi
 import com.gena_korobeynikov.yandexfinance.data.api.TransactionsApi
+import com.gena_korobeynikov.yandexfinance.data.network.NetworkMonitor
+import com.gena_korobeynikov.yandexfinance.data.network.NetworkMonitorImpl
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
@@ -11,6 +14,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Singleton
 
 private const val BASE_URL = "https://shmr-finance.ru/api/v1/"
 
@@ -44,6 +48,12 @@ class NetworkModule {
     @Provides
     fun providesCategoryApi(retrofit : Retrofit): CategoriesApi  {
         return retrofit.create(CategoriesApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideNetworkMonitor(application: Application) : NetworkMonitor {
+        return NetworkMonitorImpl(application.applicationContext)
     }
 
 }

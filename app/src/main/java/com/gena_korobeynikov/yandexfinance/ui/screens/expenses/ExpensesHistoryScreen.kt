@@ -7,6 +7,7 @@ import com.gena_korobeynikov.yandexfinance.ui.viewModels.transactions.HistoryVie
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.gena_korobeynikov.yandexfinance.data.api.ACCOUNT_ID
 import com.gena_korobeynikov.yandexfinance.ui.viewModels_factories.LocalTransactionsViewModelFactory
 
 @Composable
@@ -17,7 +18,7 @@ fun ExpensesHistoryScreen() {
     val uiState by viewModel.uiState.collectAsState()
     val startDate by viewModel.startDate.collectAsState()
     val endDate by viewModel.endDate.collectAsState()
-    val accountId: Long = 1
+    val accountId: Long = ACCOUNT_ID
 
 
     LaunchedEffect(Unit) {
