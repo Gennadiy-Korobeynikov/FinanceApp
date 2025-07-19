@@ -1,5 +1,6 @@
 package com.gena_korobeynikov.yandexfinance.ui.screens.expenses
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,18 +21,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.gena_korobeynikov.yandexfinance.R
 import com.gena_korobeynikov.yandexfinance.data.api.ACCOUNT_ID
 import com.gena_korobeynikov.yandexfinance.ui.components.ListLoader
 import com.gena_korobeynikov.yandexfinance.ui.components.MainListItem
 import com.gena_korobeynikov.yandexfinance.ui.models.TransactionUi
+import com.gena_korobeynikov.yandexfinance.ui.navigation.ScreenRoutes
 import com.gena_korobeynikov.yandexfinance.ui.states.UiState
 import com.gena_korobeynikov.yandexfinance.ui.viewModels.transactions.TodayTransactionsViewModel
 import com.gena_korobeynikov.yandexfinance.ui.viewModels_factories.LocalTransactionsViewModelFactory
 
 
 @Composable
-fun ExpensesScreen() {
+fun ExpensesScreen(
+    navController : NavHostController
+) {
     val factory = LocalTransactionsViewModelFactory.current
     val viewModel: TodayTransactionsViewModel = viewModel(factory = factory)
     val uiState by viewModel.uiState.collectAsState()
@@ -46,13 +51,17 @@ fun ExpensesScreen() {
     ) {
         val expensesToday = (uiState as UiState.Success).data.list
         val totalSum = (uiState as UiState.Success).data.totalSum
-        ExpensesList(expensesToday, totalSum)
+        ExpensesList(expensesToday, totalSum, navController)
     }
 }
 
 
 @Composable
-fun ExpensesList(expensesToday: List<TransactionUi>, totalSum : String) {
+fun ExpensesList(
+    expensesToday: List<TransactionUi>,
+    totalSum: String,
+    navController: NavHostController,
+) {
     Column {
 
         MainListItem(
@@ -73,6 +82,7 @@ fun ExpensesList(expensesToday: List<TransactionUi>, totalSum : String) {
         ) {
             items(expensesToday, key = { it.id }) { expense ->
                 MainListItem(
+                    modifier = Modifier.clickable { navController.navigate("${ScreenRoutes.EditExpense}/${expense.id}")  },
                     emoji = expense.emoji,
                     mainText = expense.categoryName,
                     subtitle = expense.comment,
@@ -92,6 +102,7 @@ fun ExpensesList(expensesToday: List<TransactionUi>, totalSum : String) {
                             )
                         }
                     }
+
                 )
             }
         }

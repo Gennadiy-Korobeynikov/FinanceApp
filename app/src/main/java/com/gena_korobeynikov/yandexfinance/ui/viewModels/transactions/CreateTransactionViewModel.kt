@@ -36,7 +36,7 @@ class CreateTransactionViewModel @Inject  constructor(
     }
 
     fun createTransaction(
-        categoryId: Int,
+        categoryId: Long,
         amount: String,
         date: LocalDate,
         time: LocalTime,

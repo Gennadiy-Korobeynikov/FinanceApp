@@ -1,19 +1,19 @@
-package com.gena_korobeynikov.yandexfinance.data.repo_Implementations
+package com.gena_korobeynikov.yandexfinance.data.repo_implementations.categories_repos
 
 import com.gena_korobeynikov.yandexfinance.data.api.CategoriesApi
-import com.gena_korobeynikov.yandexfinance.data.mappers.toDomain
-import com.gena_korobeynikov.yandexfinance.domain.repos.CategoriesRepository
+import com.gena_korobeynikov.yandexfinance.data.mappers.toDomain.toDomain
 import com.gena_korobeynikov.yandexfinance.domain.models.Category
+import com.gena_korobeynikov.yandexfinance.domain.repos.categories.CategoriesRemoteRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class CategoriesRepositoryImpl @Inject constructor(
+class CategoriesRemoteRepositoryImpl @Inject constructor(
     private val api: CategoriesApi,
     private val dispatcher: CoroutineDispatcher
-) : CategoriesRepository {
+) : CategoriesRemoteRepository {
 
     override suspend fun getCategories(isIncome : Boolean?): List<Category> =
         withContext(dispatcher) {
@@ -21,7 +21,7 @@ class CategoriesRepositoryImpl @Inject constructor(
                 api.getCategories().filter { it.isIncome == isIncome }.map { it.toDomain() }
             else
                 api.getCategories().map { it.toDomain() }
-    }
+        }
 
 
 }

@@ -23,7 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -56,9 +56,9 @@ fun TransactionAddingContent(
     var amount by rememberSaveable { mutableStateOf("") }
     var date by rememberSaveable { mutableStateOf(LocalDate.now()) }
     var time by rememberSaveable { mutableStateOf(LocalTime.now()) }
-    var categoryId by rememberSaveable { mutableIntStateOf(0) }
+    var categoryId by rememberSaveable { mutableLongStateOf(0) }
     var comment by rememberSaveable { mutableStateOf("") }
-    val selectedCategory = categories.find { it.id.toInt() == categoryId }
+    val selectedCategory = categories.find { it.id == categoryId }
 
     val context = LocalContext.current
 
@@ -70,8 +70,7 @@ fun TransactionAddingContent(
         viewModel.loadCategories(isIncome)
     }
 
-    Column(
-    ) {
+    Column {
 //        MainListItem(
 //            mainText = "Cчёт",
 //            trailing = {
@@ -84,7 +83,6 @@ fun TransactionAddingContent(
             trailing = {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     Text(
                         text = selectedCategory?.let { "${it.emoji} ${it.name}" } ?: "Выберите",
@@ -103,7 +101,7 @@ fun TransactionAddingContent(
                             DropdownMenuItem(
                                 text = { Text("${category.emoji} ${category.name}") },
                                 onClick = {
-                                    categoryId = category.id.toInt()
+                                    categoryId = category.id
                                     categoriesMenuExpanded = false
                                 }
                             )
